@@ -111,16 +111,7 @@ app.get('/advance', function (req, res) {
 
 app.locals.moment = require('moment');
 
-//로그인 Confirm
-app.use('/b', require('./routes/board'))
-app.use('/s', require('./routes/setting'))
-app.use('/cmm', require('./routes/common'))
-
-//membership
-app.use('/m', require('./routes/membership'))
-app.use('/c', require('./routes/coin'))
-app.use('/n', require('./routes/notice'))
-app.use('/cacl', require('./routes/cacl'))
+app.use('/h', require('./routes/home'))
 
 
 app.use(function (req, res, next) {
