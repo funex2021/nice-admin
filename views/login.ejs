@@ -1,91 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% include ./includes/login_cdn.ejs %>
-    <link rel="stylesheet" href="/css/components/modal.css" />
+    <% include ./includes/cdn.ejs %>
 </head>
-<body class="flex justify-center items-center h-screen bg-gray-200">
-<section class="relative w-full h-full py-40 min-h-screen">
-    <div class="absolute top-0 w-full h-full bg-gray-200 bg-full bg-no-repeat"></div>
-    <div class="container mx-auto px-4 h-full">
-        <div class="flex content-center items-center justify-center h-full">
-            <div class="w-full lg:w-4/12">
-                <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg shadow-gray-500 rounded-2xl bg-gray-50 border-0">
-                    <div class="rounded-t mb-0 px-6 py-6">
-                        <div class="text-center mb-3">
-                            <h6 class="text-gray-900 uppercase text-2xl py-5 font-bold">Login</h6>
+<body>
+<main>
+    <div class="container">
+
+        <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+                        <div class="d-flex justify-content-center py-4">
+                            <a href="index.html" class="logo d-flex align-items-center w-auto">
+                                <img src="assets/img/logo.png" alt="">
+                                <span class="d-none d-lg-block">NiceAdmin</span>
+                            </a>
+                        </div><!-- End Logo -->
+
+                        <div class="card mb-3">
+
+                            <div class="card-body">
+
+                                <div class="pt-4 pb-2">
+                                    <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
+                                    <p class="text-center small">Enter your username & password to login</p>
+                                </div>
+
+                                <form class="row g-3 needs-validation" novalidate>
+
+                                    <div class="col-12">
+                                        <label for="yourUsername" class="form-label">Username</label>
+                                        <div class="input-group has-validation">
+                                            <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                            <input type="text" name="username" class="form-control" id="yourUsername" required>
+                                            <div class="invalid-feedback">Please enter your username.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="yourPassword" class="form-label">Password</label>
+                                        <input type="password" name="password" class="form-control" id="yourPassword" required>
+                                        <div class="invalid-feedback">Please enter your password!</div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                                            <label class="form-check-label" for="rememberMe">Remember me</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button class="btn btn-primary w-100" type="submit">Login</button>
+                                    </div>
+                                    <div class="col-12">
+                                        <p class="small mb-0">Don't have account? <a href="pages-register.html">Create an account</a></p>
+                                    </div>
+                                </form>
+
+                            </div>
                         </div>
 
-                        <hr class="mt-6 border-b-1 border-gray-300" />
-                    </div>
-                    <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
-                        <form id="frm_login" action="/m/signin" method="post" onsubmit="return fnValidation();">
-                            <div class="relative w-full mb-3">
-                                <label class="block uppercase text-gray-600 text-xs font-bold mb-2" for="grid-password">
-                                    ID
-                                </label>
-                                <input type="text" class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-300 opacity-70 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="ID" id="memId" name="memId"/>
-                            </div>
-                            <div class="relative w-full mb-3">
-                                <label class="block uppercase text-gray-600 text-xs font-bold mb-2" for="grid-password">
-                                    Password
-                                </label>
-                                <input type="password" class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-300 opacity-70 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Password" id="memPass" name="memPass"/>
-                            </div>
-                            <div>
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input id="customCheckLogin" type="checkbox" class="form-checkbox border-0 rounded text-gray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"/><span class="ml-2 text-sm font-semibold text-gray-600">Remember me</span>
-                                </label>
-                            </div>
-                            <div class="text-center mt-6">
-                                <button class="btn btn-approve w-full py-3" type="button" onclick="fnLogin();">
-                                    Sign In
-                                </button>
-                            </div>
-                        </form>
+                        <div class="credits">
+                            <!-- All the links in the footer should remain intact. -->
+                            <!-- You can delete the links only if you purchased the pro version. -->
+                            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+                            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-</body>
-<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content px-5 bg-white w-full text-xs sm:text-sm rounded-lg">
-            <!-- Modal Header | Start -->
-            <div class="modal-header flex py-4 justify-between text-lg font-bold text-black">
-                <h2 class="" id="modalTitle">알림</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="bx bx-x bx-sm"></i>
-                </button>
-            </div>
-            <!-- Modal Header | End -->
-            <!-- Modal Body | Start  -->
-            <div class="modal-body border-t border-b border-gray-400 text-lg font-bold py-4 text-center" id="modalText">
 
-            </div>
-            <!-- Modal Body | End  -->
-            <!-- Modal Footer | Start -->
-            <div class="modal-footer text-right py-4">
-                <button type="button" class="btn btn-primary py-3 w-full shadow-lg" data-bs-dismiss="modal">확인</button>
-            </div>
-        </div>
+        </section>
+
     </div>
-</div>
+</main><!-- End #main -->
+</body>
 
 <% include ./includes/js.ejs %>
 </html>
 
 <script>
-
-    window.onpageshow = function(event) {
-        if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) {
-            // Back Forward Cache로 브라우저가 로딩될 경우 혹은 브라우저 뒤로가기 했을 경우
-            history.forward();
-        }
-    }
-
     $(document).ready(function () {
         $('#memPass').keypress(function (event) {
             if (event.which == 13) {
