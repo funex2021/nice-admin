@@ -1,0 +1,27 @@
+<div class="w-full mx-auto mt-6 mb-4 flex justify-center text-xs pl-10">
+    <div class="flex items-center space-x-1 text-xs">
+        <% let pagination = basicInfo.pagination;
+            if(pagination.curSet > 1  ) { %>
+            <a href="javascript:void(0)" onClick="$('#pageIndex').val('<%=pagination.startPage -1 %>'); fnSearch();" class="flex items-center btn btn-secondary" tabindex="-1">
+            <i class="bx bx-chevron-left text-lg"></i>
+            </a>
+        <% }
+      
+        for(var i = pagination.startPage; i <= pagination.endPage; i++){
+           
+          if(i > pagination.totalPage){break;}
+    
+          if(i == pagination.pageIndex){
+          %>
+            <a href="javascript:void(0)" class="px-4 py-2 btn btn-secondary" style="background-color: rgb(128, 128, 128);"> <%=parseInt(i)%> </a>
+        <% } else{  %>
+            <a href="javascript:void(0)" class="px-4 py-2 btn btn-secondary" onClick="$('#pageIndex').val('<%=i%>'); fnSearch();" ><%=parseInt(i)%> </a>
+        <%  } 
+          }   %>
+        <% if(pagination.curSet < pagination.totalSet){  %>  
+        <a href="javascript:void(0)" onClick="$('#pageIndex').val('<%=pagination.endPage + 1%>'); fnSearch();" class="flex items-center btn btn-secondary">
+        <i class="bx bx-chevron-right text-lg"></i>
+        </a>
+        <%  }  %>   
+    </div>
+</div>

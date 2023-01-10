@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+
+<body class="bg-neutral-200 md:mt-24 md:pt-0 md:pb-12 md:pr-8 md:pl-72">
+<% include ../includes/mainHeader.ejs %>
+<!-- Main Contents | Contents Start -->
+<div class="max-w-screen-2xl mx-auto bg-brown p-5 rounded-3xl shadow-2xl shadow-neutral-900">
+    <div class="content bg-brown-900 pb-16 shadow-2xl rounded-3xl">
+        <div class="intro-y flex items-center pt-10 text-neutral-50">
+            <i class="bx bx-layer nav__icon"></i>
+            <h2 class="pl-3 pt-1 text-sm lg:text-lg font-bold">공지사항</h2>
+        </div>
+
+        <div class="grid grid-cols-1 mt-3">
+            <div class="overflow-x-auto">
+                <table class="table-theme-5">
+                    <input type="hidden" id="seq" value="<%=basicInfo.detail.seq%>">
+                    <tbody>
+                        <tr>
+                            <th style="background-color: darksalmon;">제목</th>
+                            <td>
+                                <input class="form-input outlineform outlineform-search w-full" type="text" id="title" value="<%=basicInfo.detail.title%>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="background-color: darksalmon;">내용</th>
+                            <td>
+                                <textarea class="form-input outlineform outlineform-search w-full" style="resize: none;" rows="20" id="content"><%=basicInfo.detail.content%></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="background-color: darksalmon;">노출여부</th>
+                            <td style="text-align: left;">
+                                <select class="form-select outlineform outlineform-search w-full bg-white w-24" aria-label=".form-select-sm example" id="use_yn">
+                                    <option value="Y" <% if (basicInfo.detail.use_yn == 'Y') { %> selected <%}%>>
+                                        노출
+                                    </option>
+                                    <option value="N" <% if (basicInfo.detail.use_yn == 'N') { %> selected <%}%>>
+                                        미노출
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class=" text-right pt-5">
+                <% if (basicInfo.detail.seq) { %>
+                    <button class="btn btn-cancel px-8" type="button" onclick="fnUpdateNotice('<%=basicInfo.detail.seq%>');">
+                        수정
+                    </button>
+                <% } else { %>
+                    <button class="btn btn-cancel px-8" type="button" onclick="fnInsertNotice();">
+                        등록
+                    </button>
+                <% } %>
+                <button class="btn btn-warning px-8" type="button" onclick="javascript:location.href='/b/notice'">
+                    취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<% include ../includes/js.ejs %>
+<% include ../includes/footer.ejs %>
+
+<script type="text/javascript">
+    function fnInsertNotice() {
+        let data = {
+            title: $("#title").val(),
+            content: $("#content").val(),
+            use_yn: $("#use_yn").val(),
+        }
+        wrapWindowByMaskShow();
+        $.ajax({
+            url: '/b/insertNotice',
+            dataType: 'json',
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                wrapWindowByMaskHide();
+                if (result.success) {
+                    fnAlertLocationMessage('등록되었습니다.','/b/notice')
+                } else {
+                    fnAlertMessage(result.message);
+                }
+            }
+        });
+    }
+
+    function fnUpdateNotice(seq) {
+        let data = {
+            seq: seq,
+            title: $("#title").val(),
+            content: $("#content").val(),
+            use_yn: $("#use_yn").val(),
+        }
+        wrapWindowByMaskShow();
+        $.ajax({
+            url: '/b/updateNotice',
+            dataType: 'json',
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                wrapWindowByMaskHide();
+                if (result.success) {
+                    fnAlertLocationMessage('수정되었습니다.','/b/notice')
+                } else {
+                    fnAlertMessage(result.message);
+                }
+            }
+        });
+    }
+</script>
+</html>

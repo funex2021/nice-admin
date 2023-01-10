@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+<body class="bg-neutral-200 md:mt-24 md:pt-0 md:pb-12 md:pr-8 md:pl-72">
+<% include ../includes/mainHeader.ejs %>
+<!-- Main Contents | Contents Start -->
+<div class="max-w-screen-2xl mx-auto bg-neutral-900 p-5 rounded-3xl shadow-2xl shadow-neutral-900">
+    <div class="content bg-neutral-800 pb-16 shadow-2xl rounded-3xl">
+        <div class="intro-y flex items-center pt-10 text-neutral-50">
+            <i class="bx bx-home nav__icon"></i>
+            <h2 class="pl-3 pt-1 text-sm lg:text-lg font-bold">메인</h2>
+        </div>
+        <div class="xl:mt-10">
+            <div class="flex flex-col gap-5 lg:flex-row pb-8">
+                <!-- BEGIN: Basic Table | Content1 -->
+                <!-- 회원정보 -->
+                <div class="grid grid-cols-1 gap-2 mt-3 px-4 py-3 border border-solid border-1 border-gray-300 rounded-xl text-sm w-full">
+                    <div class="text-neutral-50">
+                        <h2 class="text-sm">회원정보</h2>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">전체 회원</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100"><%=basicInfo.memberCount.toLocaleString('ko-KR')%>명</span>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">월 신규</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100"><%=basicInfo.monthmMemberCount.toLocaleString('ko-KR')%>명</span>
+                    </div>
+                </div>
+
+                <!-- 당일 구매 금액 -->
+                <div class="grid grid-cols-1 gap-2 mt-3 px-4 py-3 border border-solid border-1 border-gray-300 rounded-xl text-sm w-full">
+                    <div class="text-neutral-50">
+                        <h2 class="text-sm">당일 구매 금액</h2>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">승인 금액</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100">
+                            <% let coinSell = Number(basicInfo.totSuccessCoinSell) * 10000 %>
+                            <%=coinSell.toLocaleString('ko-KR')%><span>KRW</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">취소 금액</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100">
+                            <% let coinCancel = Number(basicInfo.totCancelCoinSell) * 10000 %>
+                            <%=coinCancel.toLocaleString('ko-KR')%>
+                            <span>KRW</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 당일 전호나 코인 -->
+                <div class="grid grid-cols-1 gap-2 mt-3 px-4 py-3 border border-solid border-1 border-gray-300 rounded-xl text-sm w-full">
+                    <div class="text-neutral-50">
+                        <h2 class="text-sm">당일 전환 금액</h2>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">전환 금액</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100">
+                            <%=basicInfo.totCoinTrans.toLocaleString('ko-KR')%>
+                            <span>KRW</span>
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2">
+                        <h4 class="text-center text-xs py-2 bg-gray-700 text-white rounded-l-md">미 전환 금액</h4>
+                        <span class="text-center text-xs py-2 border-solid border-2 border-gray-300 rounded-r-md bg-gray-100">
+                            <%=basicInfo.totBalance.toLocaleString('ko-KR')%>
+                            <span>KRW</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<% include ../includes/js.ejs %>
+<% include ../includes/footer.ejs %>
+</html>

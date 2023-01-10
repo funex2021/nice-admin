@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ./includes/login_cdn.ejs %>
+    <link rel="stylesheet" href="/css/components/modal.css" />
+</head>
+<body class="flex justify-center items-center h-screen bg-gray-200">
+<section class="relative w-full h-full py-40 min-h-screen">
+    <div class="absolute top-0 w-full h-full bg-gray-200 bg-full bg-no-repeat"></div>
+    <div class="container mx-auto px-4 h-full">
+        <div class="flex content-center items-center justify-center h-full">
+            <div class="w-full lg:w-4/12">
+                <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg shadow-gray-500 rounded-2xl bg-gray-50 border-0">
+                    <div class="rounded-t mb-0 px-6 py-6">
+                        <div class="text-center mb-3">
+                            <h6 class="text-gray-900 uppercase text-2xl py-5 font-bold">Login</h6>
+                        </div>
+
+                        <hr class="mt-6 border-b-1 border-gray-300" />
+                    </div>
+                    <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+                        <form id="frm_login" action="/m/signin" method="post" onsubmit="return fnValidation();">
+                            <div class="relative w-full mb-3">
+                                <label class="block uppercase text-gray-600 text-xs font-bold mb-2" for="grid-password">
+                                    ID
+                                </label>
+                                <input type="text" class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-300 opacity-70 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="ID" id="memId" name="memId"/>
+                            </div>
+                            <div class="relative w-full mb-3">
+                                <label class="block uppercase text-gray-600 text-xs font-bold mb-2" for="grid-password">
+                                    Password
+                                </label>
+                                <input type="password" class="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-gray-300 opacity-70 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" placeholder="Password" id="memPass" name="memPass"/>
+                            </div>
+                            <div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input id="customCheckLogin" type="checkbox" class="form-checkbox border-0 rounded text-gray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"/><span class="ml-2 text-sm font-semibold text-gray-600">Remember me</span>
+                                </label>
+                            </div>
+                            <div class="text-center mt-6">
+                                <button class="btn btn-approve w-full py-3" type="button" onclick="fnLogin();">
+                                    Sign In
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+<div class="modal fade" id="alertModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content px-5 bg-white w-full text-xs sm:text-sm rounded-lg">
+            <!-- Modal Header | Start -->
+            <div class="modal-header flex py-4 justify-between text-lg font-bold text-black">
+                <h2 class="" id="modalTitle">알림</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bx bx-x bx-sm"></i>
+                </button>
+            </div>
+            <!-- Modal Header | End -->
+            <!-- Modal Body | Start  -->
+            <div class="modal-body border-t border-b border-gray-400 text-lg font-bold py-4 text-center" id="modalText">
+
+            </div>
+            <!-- Modal Body | End  -->
+            <!-- Modal Footer | Start -->
+            <div class="modal-footer text-right py-4">
+                <button type="button" class="btn btn-primary py-3 w-full shadow-lg" data-bs-dismiss="modal">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% include ./includes/js.ejs %>
+</html>
+
+<script>
+
+    window.onpageshow = function(event) {
+        if ( event.persisted || (window.performance && window.performance.navigation.type == 2)) {
+            // Back Forward Cache로 브라우저가 로딩될 경우 혹은 브라우저 뒤로가기 했을 경우
+            history.forward();
+        }
+    }
+
+    $(document).ready(function () {
+        $('#memPass').keypress(function (event) {
+            if (event.which == 13) {
+                fnLogin();
+            }
+        });
+    });
+
+    function fnValidation() {
+        if ($('#memId').val() == "") {
+            alertModal('아이디는 필수 입력값입니다.');
+            return false;
+        }
+
+        if ($('#memPass').val() == "") {
+            alertModal('패스워드는 필수 입력값입니다.');
+            return false;
+        }
+
+        return true;
+    }
+
+    function fnLogin() {
+        $("#frm_login").submit();
+    }
+
+    function enterkey() {
+        if (window.event.keyCode == 13) {
+            fnLogin();
+        }
+    }
+
+    function alertModal(message) {
+        $('#modalText').empty();
+        $('#modalText').text(message);
+        $('#alertModal').modal('show');
+    }
+
+</script>

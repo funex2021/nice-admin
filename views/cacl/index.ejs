@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+<body class="bg-gray-50 md:mt-24 md:pt-0 md:pb-12 md:pr-8 md:pl-72">
+<% include ../includes/mainHeader.ejs %>
+<!-- Main Contents | Contents Start -->
+<div class="max-w-screen-2xl mx-auto bg-brown p-5 rounded-3xl shadow-2xl shadow-neutral-900">
+    <div class="content bg-brown-900 pb-16 shadow-2xl rounded-3xl">
+        <div class="intro-y flex items-center pt-10 text-neutral-50">
+            <i class="bx bx-book nav__icon"></i>
+            <h2 class="pl-3 pt-1 text-sm lg:text-lg font-bold">정산</h2>
+        </div>
+        <div class="grid grid-cols-1 gap-6">
+            <div class="intro-y col-span-12 lg:col-span-6">
+                <!-- BEGIN: Basic Table | Content1 -->
+                <!-- 코인구매관리 -->
+                <!-- 코인구매관리 Top -->
+                <div class="">
+                    <div class="mt-5 rounded border border-solid border-red-600 px-2 py-1 text-red-600">
+                        <div class="flex gap-2 items-center w-full">
+                            <i class="bx bxs-error-circle mr-2 text-xl"></i>
+                            <p class="text-xs xm:text-xm font-bold whitespace-normal break-all overflow-x-auto">
+                                하루 단위로 조회가 되며 당일부터 7일치 까지 가능합니다. 추가적인 데이터는 별도로 문의 하여 주세요.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Search__selection--items -->
+
+                    <div class="pt-3">
+                        <!-- Date -->
+                        <div class="grid grid-cols-12 gap-2 w-full">
+                            <!-- Date -->
+                            <div class="col-span-3">
+                                <div date-rangepicker="" class="flex items-center gap-2">
+                                    <div class="relative">
+                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                            <svg class="w-5 h-5 text-neutral-50 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <input type="text" class="text-sm bg-neutral-800 text-white placeholder:text-white rounded-md border-neutral-50 focus:ring-green-500 focus:border-green-500 block w-full pl-10 py-1 datepicker-input" id="startDate" placeholder="시작일" readonly value="<%=basicInfo.search.srtDt%>"/>
+                                    </div>
+
+                                    <div class="relative">
+                                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                                            <svg class="w-5 h-5 text-neutral-50 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <input type="text" class="text-sm bg-neutral-800 text-white placeholder:text-white rounded-md border-neutral-50 focus:ring-green-500 focus:border-green-500 block w-full pl-10 py-1 datepicker-input" id="endDate" placeholder="종료일" readonly value="<%=basicInfo.search.endDt%>"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="srtDt" name="srtDt" value="<%=basicInfo.search.srtDt%>" />
+                            <input type="hidden" id="endDt" name="endDt" value="<%=basicInfo.search.endDt%>" />
+                            <div class="col-span-12 lg:col-span-7">
+                                <div class="flex flex-col lg:flex-row gap-2 items-center w-full">
+                                    <button class="btn btn-search w-32" onclick="fnSearch();">검색</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Search Selection -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- START | Table -->
+        <!-- START | 기간 검색 -->
+        <div class="overflow-x-auto pb-8 mt-3 rounded-lg shadow-lg">
+            <div class="py-5 text-neutral-50">
+                <!-- Start Date -->
+                <span class="text-sm px-1"><%=basicInfo.search.srtDt%></span>
+                <span class="text-sm px-1">~</span>
+                <!-- End Date -->
+                <span class="text-sm px-1"><%=basicInfo.search.endDt%></span>
+            </div>
+            <table class="table-theme-3">
+                <thead class="">
+                <tr class="">
+                    <th class="">
+                        입금 <br />
+                        금액
+                    </th>
+                    <th class="">
+                        판매 <br />
+                        금액
+                    </th>
+                    <th class="">
+                        사용 <br />
+                        포인트
+                    </th>
+                    <th class="">
+                        미사용<br />
+                        포인트
+                    </th>
+                    <th class="">
+                        지급<br />
+                        포인트
+                    </th>
+                    <th class="">
+                        차감<br />
+                        포인트
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="">
+                <tr class="">
+                    <% if (parseInt(basicInfo.tot_buy_num) > 0) { %>
+                        <td id="tot_buy_num"><%=basicInfo.tot_buy_num.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="tot_buy_num">0</td>
+                    <% } %>
+
+                    <% if (parseInt(basicInfo.tot_pay_num) > 0) { %>
+                        <td id="tot_pay_num"><%=basicInfo.tot_buy_num.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="tot_pay_num">0</td>
+                    <% } %>
+
+                    <% if (parseInt(basicInfo.tot_trans_num) > 0) { %>
+                        <td id="tot_trans_num"><%=basicInfo.tot_trans_num.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="tot_trans_num">0</td>
+                    <% } %>
+
+                    <% if (parseInt(basicInfo.totBalance) > 0) { %>
+                        <td id="totBalance"><%=basicInfo.totBalance.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="totBalance">0</td>
+                    <% } %>
+
+                    <% if (parseInt(basicInfo.increaseBalance) > 0) { %>
+                        <td id="increaseBalance"><%=basicInfo.increaseBalance.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="increaseBalance">0</td>
+                    <% } %>
+
+                    <% if (parseInt(basicInfo.decreaseBalance) > 0) { %>
+                        <td id="decreaseBalance"><%=basicInfo.decreaseBalance.toLocaleString('ko-KR') %></td>
+                    <% } else { %>
+                        <td id="decreaseBalance">0</td>
+                    <% } %>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>" >
+        <input type="hidden" id="gubun" value="<%=basicInfo.search.gubun%>" >
+        <!-- END | 기간 검색 -->
+        <div class="overflow-x-auto pb-8 mt-3">
+            <div class="py-5">
+                <!-- Start Date -->
+                <select class="form-select outlineform outlineform-secondary" aria-label=".form-select-sm example" id="transType">
+                    <option value="S" <% if (basicInfo.search.gubun == 'S') { %> selected <%}%> >판매 </option>
+                    <option value="T" <% if (basicInfo.search.gubun == 'T') { %> selected <%}%> >사용 </option>
+                    <option value="I" <% if (basicInfo.search.gubun == 'I') { %> selected <%}%> >지급 </option>
+                    <option value="D" <% if (basicInfo.search.gubun == 'D') { %> selected <%}%> >차감 </option>
+                    <option value="B" <% if (basicInfo.search.gubun == 'B') { %> selected <%}%> >미사용 </option>
+                </select>
+            </div>
+            <table class="table-theme-3">
+                <thead class="">
+                <tr class="">
+                    <th class="">No</th>
+                    <th class="">아이디</th>
+                    <th class="">이름</th>
+                    <th class="">판매금액</th>
+<!--                    <th class="">코인수량</th>-->
+                </tr>
+                </thead>
+                <tbody class="">
+                <% if (basicInfo.caclList.length > 0) {
+                    var num = basicInfo.pagination.totalPageCount - ((basicInfo.pagination.pageIndex -1) * basicInfo.pagination.rowsPerPage)
+                    basicInfo.caclList.forEach(function(el, index) { %>
+                    <tr class="text-center">
+                        <td><%=num - index%></td>
+                        <td><%=el.mem_id%></td>
+                        <td><%=el.mem_nm%></td>
+                        <td><%=el.buy_num.toLocaleString('ko-KR')%> <span>KRW</span></td>
+<!--                        <td><%=el.send_num.toLocaleString('ko-KR')%> <span>Coin</span></td>-->
+                    </tr>
+                <% })} %>
+                </tbody>
+            </table>
+            <!-- START | Pagination -->
+            <% include ../includes/paging.ejs %>
+            <!-- END | Pagination -->
+        </div>
+        <!-- END | Table -->
+    </div>
+</div>
+<% include ../includes/js.ejs %>
+<% include ../includes/footer.ejs %>
+</body>
+<script>
+    $(function () {
+
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+        // $('input[id="datepicker"]').daterangepicker({
+        //     startDate: srtDt,
+        //     endDate: endDt,
+        //     locale: {
+        //         format: 'YYYY/MM/DD'
+        //     },
+        // });
+
+        if ($('#gubun').val() == 'S') {
+            $('#tdKrwTot').text($('#krwTot').val() + 'krw')
+            $('#tdBalanceTot').text($('#balanceTot').val() + 'obj')
+        } else {
+            $('#tdBalanceTot').text($('#balanceTot').val() + 'obj')
+        }
+
+        $('#transType').on('change', function () {
+            $('#gubun').val($(this).val())
+            $('#ageIndex').val(1);
+            fnSearch();
+        })
+    })
+
+
+    function fnSearch() {
+        // let date = $("#datepicker").val().split("-");
+
+        // $('#srtDt').val($.trim(date[0]));
+        // $('#endDt').val($.trim(date[1]));
+        $('#srtDt').val($("#startDate").val());
+        $('#endDt').val($("#endDate").val());
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+
+        // console.log(srtDt)
+        // console.log(endDt)
+        // alert();
+        let gubun = $('#gubun').val();
+
+        let pageIndex = $('#pageIndex').val();
+
+        var form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "Post");  //Post 방식
+        form.setAttribute("action", "/cacl/view"); //요청 보낼 주소
+
+        var hiddenField1 = document.createElement("input");
+        hiddenField1.setAttribute("type", "hidden");
+        hiddenField1.setAttribute("name", "pageIndex");
+        hiddenField1.setAttribute("value", pageIndex);
+        form.appendChild(hiddenField1);
+
+        var hiddenField2 = document.createElement("input");
+        hiddenField2.setAttribute("type", "hidden");
+        hiddenField2.setAttribute("name", "srtDt");
+        hiddenField2.setAttribute("value", srtDt);
+        form.appendChild(hiddenField2);
+
+        var hiddenField3 = document.createElement("input");
+        hiddenField3.setAttribute("type", "hidden");
+        hiddenField3.setAttribute("name", "endDt");
+        hiddenField3.setAttribute("value", endDt);
+        form.appendChild(hiddenField3);
+
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", "gubun");
+        hiddenField4.setAttribute("value", gubun);
+        form.appendChild(hiddenField4);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
+</html>

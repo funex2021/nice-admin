@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+
+<body class="bg-neutral-200 md:mt-24 md:pt-0 md:pb-12 md:pr-8 md:pl-72">
+<% include ../includes/mainHeader.ejs %>
+<!-- Main Contents | Contents Start -->
+<div class="max-w-screen-2xl mx-auto bg-brown p-5 rounded-3xl shadow-2xl shadow-neutral-900">
+    <div class="content bg-brown-900 pb-16 shadow-2xl rounded-3xl">
+        <div class="intro-y flex items-center pt-10 text-neutral-50">
+            <i class="bx bx-layer nav__icon"></i>
+            <h2 class="pl-3 pt-1 text-sm lg:text-lg font-bold">유저로그</h2>
+        </div>
+        <!-- Select Box | 회원관리 검색  -->
+
+        <div class="grid grid-flow-col grid-cols-12 mt-3 gap-2">
+            <!-- Date -->
+            <div class="col-span-4">
+                <div date-rangepicker="" class="flex items-center gap-2">
+                    <div class="relative">
+                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-50 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <input type="text" class="text-sm outlineform outlineform-secondary text-white placeholder:text-white rounded-md border-neutral-50 focus:ring-green-500 focus:border-green-500 block w-full pl-10 py-1 datepicker-input" id="startDate" placeholder="시작일" readonly value="<%=basicInfo.search.srtDt%>"/>
+                    </div>
+                    <div class="relative">
+                        <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-50 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <input type="text" class="text-sm outlineform outlineform-secondary text-white placeholder:text-white rounded-md border-neutral-50 focus:ring-green-500 focus:border-green-500 block w-full pl-10 py-1 datepicker-input" id="endDate" placeholder="종료일" readonly value="<%=basicInfo.search.endDt%>"/>
+                    </div>
+                </div>
+                <input type="hidden" id="srtDt" name="srtDt" value="<%=basicInfo.search.srtDt%>" />
+                <input type="hidden" id="endDt" name="endDt" value="<%=basicInfo.search.endDt%>" />
+            </div>
+            <div class="col-span-2">
+                <select class="form-select w-full outlineform outlineform-secondary" aria-label=".form-select example" id="srchOption" name="gubun" onchange="javascript:$('#pageIndex').val(1)">
+                    <option value="CMDT00000000000019" <% if (basicInfo.search.option=='CMDT00000000000019' ) { %> selected <%}%> >
+                        회원아이디
+                    </option>
+                    <option value="userIP" <% if (basicInfo.search.option=='userIP' ) { %> selected <%}%> >
+                        회원IP
+                    </option>
+                </select>
+            </div>
+            <div class="col-span-2">
+                <select class="form-select w-full outlineform outlineform-secondary" aria-label=".form-select example" id="pay_code" name="gubun" onchange="javascript:$('#pageIndex').val(1)">
+                    <option value="">전체</option>
+                    <option value="login" <% if (basicInfo.pay_code=='login' ) { %> selected<%}%> >login</option>
+                    <option value="buy" <% if (basicInfo.pay_code=='buy' ) { %> selected<%}%> >buy</option>
+                    <option value="자동회원정지" <% if (basicInfo.pay_code=='자동회원정지' ) { %> selected<%}%> >자동회원정지</option>
+                </select>
+            </div>
+            <div class="col-span-4">
+                <div class="w-full flex items-center gap-2">
+                    <input type="text" class="form-input w-full outlineform outlineform-secondary" placeholder="선택에 해당하는 내용을 입력하세요." aria-label=".form-control example" value="" id="srchText" name="srchText"/>
+                    <button class="btn btn-search w-24" onclick="fnSearch();">검색</button>
+                    <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>">
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 mt-3">
+            <div class="flex rlex-row w-full text-right my-3 text-neutral-50 justify-end">
+                <select class="form-select w-48 outlineform outlineform-secondary" aria-label=".form-select example" id="rowsPerPage" name="rowsPerPage" onchange="javascript:$('#pageIndex').val(1)">
+                    <option value="10" <% if (basicInfo.pagination.rowsPerPage=='10' ) { %> selected<%}%> >
+                        10개씩 보기
+                    </option>
+                    <option value="20" <% if (basicInfo.pagination.rowsPerPage=='20' ) { %> selected<%}%> >
+                        20개씩 보기
+                    </option>
+                    <option value="50" <% if (basicInfo.pagination.rowsPerPage=='50' ) { %> selected<%}%> >
+                        50개씩 보기
+                    </option>
+                    <option value="100" <% if (basicInfo.pagination.rowsPerPage=='100' ) { %> selected<%}%> >
+                        100개씩 보기
+                    </option>
+                </select>
+                <i class="bx bx-select-multiple bx-sm" onclick="requestExcel();"></i>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="table-theme-3">
+                    <colgroup>
+                        <col width="8%" />
+                        <col width="14%" />
+                        <col width="40%" />
+                        <col width="8%" />
+                        <col width="8%" />
+                        <col width="8%" />
+                        <col width="20%" />
+                    </colgroup>
+                    <thead>
+                    <tr class="text-center">
+                        <th>No</th>
+                        <th>아이디</th>
+                        <th>요청내역</th>
+                        <th>요청코드</th>
+                        <th>결과</th>
+                        <th>IP</th>
+                        <th>요청시간</th>
+                    </tr>
+                    </thead>
+                    <tbody class="">
+                    <% if (basicInfo.memList.length> 0) {
+                        var num = basicInfo.pagination.totalPageCount - ((basicInfo.pagination.pageIndex -1) *
+                                basicInfo.pagination.rowsPerPage)
+                        basicInfo.memList.forEach(function(el, index) { %>
+                        <tr class="text-center">
+                            <td>
+                                <%= num - index %>
+                            </td>
+                            <td>
+                                <%= el.pay_request %>
+                            </td>
+                            <td style="text-align: left;">
+                                <%= el.pay_response %>
+                            </td>
+                            <td>
+                                <%= el.pay_code %>
+                            </td>
+                            <% if (el.is_success=='00' ){ el.is_success='실패' } else { el.is_success='성공' } %>
+                            <td>
+                                <% if (el.is_success=='실패' ) { %>
+                                    <span class="btn rounded-pill"
+                                          style="background-color:#ee7878; color:white !important;">실패</span>
+                                <% } else { %>
+                                    <span class="btn rounded-pill"
+                                          style="background-color:#73c263; color:white !important;">성공</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <%= el.user_ip %>
+                            </td>
+                            <td>
+                                <%= el.create_dt %>
+                            </td>
+                        </tr>
+                    <% })} %>
+                    </tbody>
+                </table>
+                <!-- START | Pagination -->
+                <% include ../includes/paging.ejs %>
+                <!-- END | Pagination -->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<% include ../includes/js.ejs %>
+<% include ../includes/footer.ejs %>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#srchText').keypress(function (event) {
+            if (event.which == 13) {
+                fnSearch();
+            }
+        });
+
+        // let srtDt = $('#srtDt').val();
+        // let endDt = $('#endDt').val();
+        // $('input[name="datepicker"]').d({
+        //     startDate: srtDt,
+        //     endDate: endDt,
+        //     locale: {
+        //         format: 'YYYY/MM/DD'
+        //     },
+        // });
+    });
+
+    function fnSearch() {
+
+        let srchText = $('#srchText').val();
+        let pageIndex = $('#pageIndex').val();
+        let srchOption = $('#srchOption option:selected').val();
+        let rowsPerPage = $('#rowsPerPage option:selected').val();
+
+        // let date = $("#datepicker").val().split("-");
+        let pay_code = $("#pay_code").val();
+
+        // $('#srtDt').val($.trim(date[0]));
+        // $('#endDt').val($.trim(date[1]));
+        $('#srtDt').val($("#startDate").val());
+        $('#endDt').val($("#endDate").val());
+
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+
+
+        var form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "Post"); //Post 방식
+        form.setAttribute("action", "/m/logView"); //요청 보낼 주소
+
+        var hiddenField1 = document.createElement("input");
+        hiddenField1.setAttribute("type", "hidden");
+        hiddenField1.setAttribute("name", "pageIndex");
+        hiddenField1.setAttribute("value", pageIndex);
+        form.appendChild(hiddenField1);
+        var hiddenField2 = document.createElement("input");
+        hiddenField2.setAttribute("type", "hidden");
+        hiddenField2.setAttribute("name", "srchOption");
+        hiddenField2.setAttribute("value", srchOption);
+        form.appendChild(hiddenField2);
+        var hiddenField3 = document.createElement("input");
+        hiddenField3.setAttribute("type", "hidden");
+        hiddenField3.setAttribute("name", "srchText");
+        hiddenField3.setAttribute("value", srchText);
+        form.appendChild(hiddenField3);
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", "rowsPerPage");
+        hiddenField4.setAttribute("value", rowsPerPage);
+        form.appendChild(hiddenField4);
+        var hiddenField5 = document.createElement("input");
+        hiddenField5.setAttribute("type", "hidden");
+        hiddenField5.setAttribute("name", "srtDt");
+        hiddenField5.setAttribute("value", srtDt);
+        form.appendChild(hiddenField5);
+        var hiddenField6 = document.createElement("input");
+        hiddenField6.setAttribute("type", "hidden");
+        hiddenField6.setAttribute("name", "endDt");
+        hiddenField6.setAttribute("value", endDt);
+        form.appendChild(hiddenField6);
+        var hiddenField7 = document.createElement("input");
+        hiddenField7.setAttribute("type", "hidden");
+        hiddenField7.setAttribute("name", "pay_code");
+        hiddenField7.setAttribute("value", pay_code);
+        form.appendChild(hiddenField7);
+
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function requestExcel() {
+        wrapWindowByMaskShow();
+        let srchText = $('#srchText').val();
+        let srchOption = $('#srchOption option:selected').val();
+
+        // let date = $("#datepicker").val().split("-");
+        let pay_code = $("#pay_code").val();
+
+        // $('#srtDt').val($.trim(date[0]));
+        // $('#endDt').val($.trim(date[1]));
+        $('#srtDt').val($("#startDate").val());
+        $('#endDt').val($("#endDate").val());
+
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+
+        $.ajax({
+            url: '/m/userLogExcel', //excelList
+            dataType: 'json',
+            type: 'POST',
+            data: {
+                srchText: srchText,
+                srchOption: srchOption,
+                pay_code: pay_code,
+                srtDt: srtDt,
+                endDt: endDt
+            },
+            success: function (result) {
+                wrapWindowByMaskHide();
+                $('#passwordChangeModal').modal('hide')
+                if (result.success) {
+                    let memList = result.data.memList;
+                    console.log(memList);
+                    let html = "";
+                    html += '<table class="table table-border-top-0 table-fixed" id="memberTable" style="display:none">'
+                    html += '<colgroup><col width="10%"><col width="10%"><col width="8%"><col width="6%"><col width="10%"><col width="10%">'
+                    html += '<col width="12%"><col width="10%"><col width="10%"></colgroup>'
+                    html += '                                                       <thead >'
+                    html += '                                                               <tr class="text-center">'
+                    html += '                                                               <th>아이디</th>'
+                    html += '                                                               <th>요청 내용</th>'
+                    html += '                                                               <th>요청 Code</th>'
+                    html += '                                                               <th>요청 시간</th>'
+                    html += '                                                               <th>사용자 IP</th>'
+                    html += '                                       </thead>'
+                    html += '<tbody> '
+                    for (var i = 0; i < memList.length; i++) {
+                        html += '<tr class="text-center">'
+                        html += '       <td>' + memList[i].pay_request + '</td>'
+                        html += '       <td>' + memList[i].pay_response + '</td>'
+                        html += '       <td>' + memList[i].pay_code + '</td>'
+                        html += '       <td>' + memList[i].create_dt + '</td>'
+                        html += '       <td>' + memList[i].user_ip + '</td>'
+                        html += '</tr>'
+                    }
+                    html += '</tbody>'
+                    html += '</table>'
+
+                    $('body').append(html);
+
+                    $("#memberTable").table2excel({
+                        exclude: ".excludeThisClass",
+                        name: "회원관리",
+                        filename: "유저로그내역.xls", // do include extension
+                        preserveColors: false // set to true if you want background colors and font colors preserved
+                    });
+
+                } else {
+                    $('#modalText').empty();
+                    $('#modalText').text(result.message);
+                    $('#alertModal').modal('show');
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                wrapWindowByMaskHide();
+                $('#modalText').empty();
+                $('#modalText').text('정상적으로 처리되지 않았습니다.');
+                $('#alertModal').modal('show');
+            } //function끝
+        });
+
+    }
+
+
+</script>
+
+</html>
