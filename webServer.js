@@ -112,6 +112,7 @@ app.get('/advance', function (req, res) {
 app.locals.moment = require('moment');
 
 app.use('/h', require('./routes/home'))
+app.use('/d', require('./routes/dashboard'))
 
 
 app.use(function (req, res, next) {
