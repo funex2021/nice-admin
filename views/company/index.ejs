@@ -6,110 +6,110 @@
 </head>
 
 <body>
-<% include ../includes/header.ejs %>
-<% include ../includes/sidebar.ejs %>
-<main id="main" class="main">
-    <div class="pagetitle"><h1>회원사관리</h1>
-    </div>
-    <section class="section">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <br>
-                        <div class="row mb-3">
-                            <div class="col-sm-2">
-                                <select class="form-select" id="srchOption">
-                                    <option value="">전체</option>
-                                    <% if (basicInfo.companyListTotal.length> 0) {
-                                    basicInfo.companyListTotal.forEach(function(el, index) { %>
-                                        <option value="<%=el.cmpny_cd%>" <% if (basicInfo.search.srchOption == el.cmpny_id ) { %> selected <%}%>><%=el.cmpny_id%></option>
-                                    <% })} %>
-                                </select>
-                            </div>
-                            <div class="col-sm-7">
-                                <div class="input-group mb-3">
-                                    <button type="button" class="btn btn-success" onclick="fnSearch();">검색</button>
+    <% include ../includes/header.ejs %>
+    <% include ../includes/sidebar.ejs %>
+    <main id="main" class="main">
+        <div class="pagetitle"><h1>회원사관리</h1>
+        </div>
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <div class="row mb-3">
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="srchOption">
+                                        <option value="">전체</option>
+                                        <% if (basicInfo.companyListTotal.length> 0) {
+                                        basicInfo.companyListTotal.forEach(function(el, index) { %>
+                                            <option value="<%=el.cmpny_cd%>" <% if (basicInfo.search.srchOption == el.cmpny_cd ) { %> selected <%}%>><%=el.cmpny_id%></option>
+                                        <% })} %>
+                                    </select>
+                                </div>
+                                <div class="col-sm-7">
+                                    <div class="input-group mb-3">
+                                        <button type="button" class="btn btn-success" onclick="fnSearch();">검색</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="rowsPerPage" onchange="fnSearch();">
+                                        <option value="10" <% if (basicInfo.search.rowsPerPage == '10' ) { %> selected <%}%>>10</option>
+                                        <option value="20" <% if (basicInfo.search.rowsPerPage == '20' ) { %> selected <%}%>>20</option>
+                                        <option value="50" <% if (basicInfo.search.rowsPerPage == '50' ) { %> selected <%}%>>50</option>
+                                        <option value="100" <% if (basicInfo.search.rowsPerPage == '100' ) { %> selected <%}%>>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1" style="padding-top: 5px;">
+                                    줄보기
                                 </div>
                             </div>
-                            <div class="col-sm-2">
-                                <select class="form-select" id="rowsPerPage" onchange="fnSearch();">
-                                    <option value="10" <% if (basicInfo.search.rowsPerPage == '10' ) { %> selected <%}%>>10</option>
-                                    <option value="20" <% if (basicInfo.search.rowsPerPage == '20' ) { %> selected <%}%>>20</option>
-                                    <option value="50" <% if (basicInfo.search.rowsPerPage == '50' ) { %> selected <%}%>>50</option>
-                                    <option value="100" <% if (basicInfo.search.rowsPerPage == '100' ) { %> selected <%}%>>100</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-1" style="padding-top: 5px;">
-                                줄보기
-                            </div>
-                        </div>
-                        <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
-                            <div class="dataTable-container">
-                                <table class="table datatable dataTable-table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">
-                                            회원사
-                                        </th>
-                                        <th scope="col">
-                                            상태
-                                        </th>
-                                        <th scope="col">
-                                            회원사커미션
-                                        </th>
-                                        <th scope="col">
-                                            에이전트
-                                        </th>
-                                        <th scope="col" >
-                                            에이전트커미션
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <% if (basicInfo.companyList.length> 0) {
-                                    basicInfo.companyList.forEach(function(el, index) { %>
+                            <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                <div class="dataTable-container">
+                                    <table class="table datatable dataTable-table">
+                                        <thead>
                                         <tr>
-                                            <td>
-                                                <%= el.cmpny_id%>
-                                            </td>
-                                            <td>
-                                                <%= el.cmpny_status_name%>
-                                            </td>
-                                            <td>
-                                                <%= el.company_commission%>
-                                            </td>
-                                            <td>
-                                                <%= el.agent_id%>
-                                            </td>
-                                            <td>
-                                                <%= el.agent_commission%>
-                                            </td>
+                                            <th scope="col">
+                                                회원사
+                                            </th>
+                                            <th scope="col">
+                                                상태
+                                            </th>
+                                            <th scope="col">
+                                                회원사커미션
+                                            </th>
+                                            <th scope="col">
+                                                에이전트
+                                            </th>
+                                            <th scope="col" >
+                                                에이전트커미션
+                                            </th>
                                         </tr>
-                                    </tbody>
-                                    <% }) %>
-                                    <% } else { %>
-                                        <tr>
-                                            <td class="text-center" colspan="5">
-                                                데이터가 없습니다.
-                                            </td>
-                                        </tr>
-                                    <% }%>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        <% if (basicInfo.companyList.length> 0) {
+                                        basicInfo.companyList.forEach(function(el, index) { %>
+                                            <tr>
+                                                <td>
+                                                    <%= el.cmpny_id%>
+                                                </td>
+                                                <td>
+                                                    <%= el.cmpny_status_name%>
+                                                </td>
+                                                <td>
+                                                    <%= el.company_commission%>
+                                                </td>
+                                                <td>
+                                                    <%= el.agent_id%>
+                                                </td>
+                                                <td>
+                                                    <%= el.agent_commission%>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td class="text-center" colspan="5">
+                                                    데이터가 없습니다.
+                                                </td>
+                                            </tr>
+                                        <% }%>
+                                    </table>
+                                </div>
+                                <% include ../includes/paging.ejs %>
+                                <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>">
                             </div>
-                            <% include ../includes/paging.ejs %>
-                            <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>">
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
+    </main>
 
-<% include ../includes/footer.ejs %>
-<% include ../includes/modal.ejs %>
-<% include ../includes/js.ejs %>
+    <% include ../includes/footer.ejs %>
+    <% include ../includes/modal.ejs %>
+    <% include ../includes/js.ejs %>
 </body>
 </html>
 <script>

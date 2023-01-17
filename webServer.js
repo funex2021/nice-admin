@@ -115,6 +115,7 @@ app.use('/h', require('./routes/home'))
 app.use('/d', require('./routes/dashboard'))
 app.use('/c', require('./routes/company'))
 app.use('/m', require('./routes/member'))
+app.use('/t', require('./routes/trade'))
 
 
 app.use(function (req, res, next) {

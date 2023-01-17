@@ -9,7 +9,7 @@
     <% include ../includes/header.ejs %>
     <% include ../includes/sidebar.ejs %>
     <main id="main" class="main">
-        <div class="pagetitle"><h1>회원관리</h1>
+        <div class="pagetitle"><h1>회원구매</h1>
         </div>
         <section class="section">
             <div class="row">
@@ -20,16 +20,26 @@
                             <div class="row mb-3">
                                 <div class="col-sm-2">
                                     <select class="form-select" id="srchOption">
-                                        <option value="" <% if (basicInfo.search.srchOption == '' ) { %> selected <%}%>>전체</option>
+                                        <option value="">전체</option>
                                         <% if (basicInfo.companyListTotal.length> 0) {
                                         basicInfo.companyListTotal.forEach(function(el, index) { %>
                                             <option value="<%=el.cmpny_cd%>" <% if (basicInfo.search.srchOption == el.cmpny_cd ) { %> selected <%}%>><%=el.cmpny_id%></option>
                                         <% })} %>
                                     </select>
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-2">
                                     <div class="input-group mb-3">
                                         <input type="text" class="form-control" id="srchText" value="<%=basicInfo.search.srchText%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="srtDt" value="<%=basicInfo.search.srtDt%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="endDt" value="<%=basicInfo.search.endDt%>">
                                     </div>
                                 </div>
                                 <div class="col-sm-1">
@@ -61,16 +71,22 @@
                                                 아이디
                                             </th>
                                             <th scope="col">
-                                                상태
+                                                금액
                                             </th>
                                             <th scope="col">
-                                                보유머니
+                                                상태
+                                            </th>
+                                            <th scope="col" >
+                                                등록일
+                                            </th>
+                                            <th scope="col" >
+                                                처리일
                                             </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <% if (basicInfo.memberList.length> 0) {
-                                        basicInfo.memberList.forEach(function(el, index) { %>
+                                        <% if (basicInfo.sellList.length> 0) {
+                                        basicInfo.sellList.forEach(function(el, index) { %>
                                             <tr>
                                                 <td>
                                                     <%= el.cmpny_id%>
@@ -79,17 +95,23 @@
                                                     <%= el.mem_id%>
                                                 </td>
                                                 <td>
-                                                    <%= el.mem_status_name%>
+                                                    <%= el.buy_num%>
                                                 </td>
                                                 <td>
-                                                    <%= el.balance%>
+                                                    <%= el.sell_sts_name%>
+                                                </td>
+                                                <td>
+                                                    <%= el.create_dt%>
+                                                </td>
+                                                <td>
+                                                    <%= el.update_dt%>
                                                 </td>
                                             </tr>
                                         </tbody>
                                         <% }) %>
                                         <% } else { %>
                                             <tr>
-                                                <td class="text-center" colspan="4">
+                                                <td class="text-center" colspan="6">
                                                     데이터가 없습니다.
                                                 </td>
                                             </tr>
@@ -117,12 +139,14 @@
         let srchOption = $('#srchOption option:selected').val();
         let pageIndex = $('#pageIndex').val();
         let rowsPerPage = $('#rowsPerPage').val();
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
 
 
         var form = document.createElement("form");
         form.setAttribute("charset", "UTF-8");
         form.setAttribute("method", "Post"); //Post 방식
-        form.setAttribute("action", "/m/view"); //요청 보낼 주소
+        form.setAttribute("action", "/t/view"); //요청 보낼 주소
 
         var hiddenField1 = document.createElement("input");
         hiddenField1.setAttribute("type", "hidden");
@@ -144,6 +168,16 @@
         hiddenField4.setAttribute("name", "rowsPerPage");
         hiddenField4.setAttribute("value", rowsPerPage);
         form.appendChild(hiddenField4);
+        var hiddenField5 = document.createElement("input");
+        hiddenField5.setAttribute("type", "hidden");
+        hiddenField5.setAttribute("name", "srtDt");
+        hiddenField5.setAttribute("value", srtDt);
+        form.appendChild(hiddenField5);
+        var hiddenField6 = document.createElement("input");
+        hiddenField6.setAttribute("type", "hidden");
+        hiddenField6.setAttribute("name", "endDt");
+        hiddenField6.setAttribute("value", endDt);
+        form.appendChild(hiddenField6);
 
         document.body.appendChild(form);
         form.submit();
