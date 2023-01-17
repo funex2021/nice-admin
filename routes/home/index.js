@@ -55,4 +55,8 @@ router.get('/logout', function (req, res) {
     res.redirect('/login');
 });
 
+router.post('/totalMember', isAuthenticated, home.totalMember);
+router.post('/totalCompany', isAuthenticated, home.totalCompany);
+router.post('/totalSell', isAuthenticated, home.totalSell);
+
 module.exports = router;

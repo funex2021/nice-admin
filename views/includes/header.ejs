@@ -13,14 +13,14 @@
         <div class="col-xxl-3 col-3 mt-4">
             <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
                 <div class="card-body" style="padding:20px 20px 20px 20px">
-                    <h5 class="card-title text-primary" style="color:#4154f1;">1,340명</h5>
+                    <h5 class="card-title text-primary" style="color:#4154f1;" id="totalMember">0명</h5>
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                             <i class="bi bi-people"></i>
                         </div>
                         <div class="ps-3">
-                            <span class="small pt-1 fw-bold" style="color: #012970;">총 회원수</span> <span
-                                    class="text-muted small pt-2 ps-1">(4파트너)</span>
+                            <span class="small pt-1 fw-bold" style="color: #012970;">총 회원수</span>
+                            <span class="text-muted small pt-2 ps-1" id="totalCompany">(0파트너)</span>
                         </div>
                     </div>
                 </div>
@@ -34,9 +34,9 @@
                             <i class="bx bxs-calendar"></i>
                         </div>
                         <div class="ps-3 row mt-1">
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">이번달입금(207건)</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;">170,340,000원</p>
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">오늘입금(15건)</p>
+                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellMonthCnt">이번달입금(0건)</p>
+                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellMonthPrice">0원</p>
+                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">어제입금(15건)</p>
                             <p class="text-primary small fw-bold" style="margin-bottom:0;">7,160,000원</p>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                         <div class="ps-3 row mt-1">
                             <p class="small fw-bold" style="color: #012970;margin-bottom:0;">이번달총수익</p>
                             <p class="text-primary small fw-bold" style="margin-bottom:0;">340,680원</p>
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">오늘총수익</p>
+                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">어제총수익</p>
                             <p class="text-primary small fw-bold" style="margin-bottom:0;">14,320원</p>
                         </div>
                     </div>
@@ -124,3 +124,87 @@
         </ul>
     </nav><!-- End Icons Navigation -->
 </header><!-- End Header -->
+<script>
+    $(function () {
+        //총회원수
+        getTotalMember();
+        //총파트너수
+        getTotalCompany();
+        //이번달입금 어제입금
+        getTotalSell();
+        //이번달총수익
+        //어제총수익
+        //인출가능금액
+    })
+
+    function addComma(value) {
+        value = value.toString();
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return value;
+    }
+
+    function getTotalMember() {
+        let data = {
+
+        }
+
+        $.ajax({
+            url: "/h/totalMember",
+            dataType: "json",
+            type: "post",
+            data: data,
+            success: function(result) {
+                if (result.success) {
+                    $("#totalMember").html(addComma(result.data) +'명');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alertModal("관리자에게 문의하여 주세요.");
+            },
+        });
+    }
+
+    function getTotalCompany() {
+        let data = {
+
+        }
+
+        $.ajax({
+            url: "/h/totalCompany",
+            dataType: "json",
+            type: "post",
+            data: data,
+            success: function(result) {
+                if (result.success) {
+                    $("#totalCompany").html('('+addComma(result.data)+")파트너")
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alertModal("관리자에게 문의하여 주세요.");
+            },
+        });
+    }
+
+    function getTotalSell() {
+        let data = {
+
+        }
+
+        $.ajax({
+            url: "/h/totalSell",
+            dataType: "json",
+            type: "post",
+            data: data,
+            success: function(result) {
+                console.log(result)
+                if (result.success) {
+                    $("#sellMonthCnt").html('이번달입금('+addComma(result.data.totalSellCnt)+'건)')
+                    $("#sellMonthPrice").html('어제입금('+addComma(result.data.totalSell)+'원)')
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alertModal("관리자에게 문의하여 주세요.");
+            },
+        });
+    }
+</script>
