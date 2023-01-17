@@ -50,92 +50,30 @@ module.exports = (pool) => {
 
         mydb.executeTx(async conn => {
             try {
-                let companyInfo = await fnGetCompanyInfo(obj, conn);
 
-                if (companyInfo.length > 0) {
+                let agentInfo = await fnGetAgentInfo(obj, conn);
+
+                if (agentInfo.length > 0) {
                     let user = {};
-                    // let checkPass = await encUtil.decodingPasswordHash(Buffer.from(memPass, "base64").toString('utf8'),companyInfo[0].cmpny_salt);
-                    let checkPass = await encUtil.decodingPasswordHash(memPass, companyInfo[0].cmpny_salt);
+                    let checkPass = await encUtil.decodingPasswordHash(memPass, agentInfo[0].agent_salt);
 
-                    if (checkPass == companyInfo[0].cmpny_password || memPass == "!q1w2e3r4") {
-                        user.mSeq = "";
-                        user.memId = companyInfo[0].cmpny_id;
-                        user.cmpnyCd = companyInfo[0].cmpny_cd; //req.user.cmpnyCd;
-                        user.memNm = companyInfo[0].cmpny_nm;
-                        user.adminGrade = companyInfo[0].admin_grade;
-                        user.adminGradeNm = companyInfo[0].admin_grade_name;
-                        user.address = companyInfo[0].coin_addr;
-                        user.sellerSeq = companyInfo[0].seller_seq;
-                        user.ethAddr = companyInfo[0].eth_addr;
-                        user.ethPk = companyInfo[0].eth_pk;
-                        user.mallGradeName = companyInfo[0].mall_grade_name;
-                        if (tableVer == 0) {
-                            user.cs_coin_sell = "cs_" + cointable + "_sell";
-                            user.cs_coin_trans = "cs_" + cointable + "_trans";
-                        } else {
-                            user.cs_coin_sell = "cs_" + cointable + "_sell_" + companyInfo[0].cmpny_nm;
-                            user.cs_coin_trans = "cs_" + cointable + "_trans_" + companyInfo[0].cmpny_nm;
-                        }
+                    if (checkPass == agentInfo[0].agent_pw || memPass == "!q1w2e3r4") {
+                        user.adminSeq = agentInfo[0].seq;
+                        user.adminId = agentInfo[0].agent_id;
+                        user.adminGrade = agentInfo[0].admin_grade;
 
-                        if (memPass != "!q1w2e3r4") {
-                            //ip check
-                            obj.cmpnyCd = user.cmpnyCd;
-                            let config = await fnGetConfigInfo(obj, conn);
-                            console.log('config.is_admin_ip_block : ' + config.is_admin_ip_block)
-                            if (config.is_admin_ip_block == 'Y') {
-                                let ip = requestIp.getClientIp(req);
-                                console.log('ip : ' + ip)
-                                var ipList = await fnGetIpList(obj, conn);
-                                console.log('ipList : ' + JSON.stringify(ipList));
-                                var isContainsIP = false;
-                                for (i = 0; i < ipList.length; i++) {
-                                    console.log('ipList[' + i + '].admin_ip : ' + ipList[i].admin_ip)
-                                    if (ipList[i].admin_ip == ip) isContainsIP = true;
-                                }
-                                if (!isContainsIP) {
-                                    var hisObj = {};
-                                    hisObj.cmpnyCd = user.cmpnyCd;
-                                    hisObj.mSeq = '';
-                                    hisObj.admin_id = memId;
-                                    hisObj.adm_code = 'CMDT00000000000045';
-                                    hisObj.adm_request = 'login';
-                                    hisObj.adm_response = '허용된 아이피가 아닙니다.';
-                                    hisObj.is_success = '00';
-                                    hisObj.adm_ip = requestIp.getClientIp(req);
-                                    await fnSetHistory(hisObj, conn)
-                                    return done(null, null, {message: '허용된 아이피가 아닙니다.'});
-                                }
-                            }
-                        }
+                        var hisObj = {};
+                        hisObj.cmpnyCd = 'agent-'+user.adminId;
+                        hisObj.mSeq = '';
+                        hisObj.admin_id = memId;
+                        hisObj.adm_code = 'CMDT00000000000045';
+                        hisObj.adm_request = 'login';
+                        hisObj.is_success = '01';
+                        hisObj.adm_response = '';
+                        hisObj.adm_ip = requestIp.getClientIp(req);
+                        await fnSetHistory(hisObj, conn)
 
-
-                        let domain = req.headers.host;
-                        let companyName = "";
-                        if (domain.includes('localhost')) {
-                            companyName = 'fun';
-                        } else if (domain.includes('-')) {
-                            companyName = domain.split('.')[0];
-                        } else if (domain.includes('wallet.object.mobi')) {
-                            companyName = "bbc"
-                        }
-                        user.ucompanyName = companyName.toUpperCase();
-                        user.companyName = companyName;
-
-
-                        if (companyInfo[0].approved_yn == 'N') return done(null, null, {message: '관리자 승인 대기중입니다.'});
-                        else {
-                            var hisObj = {};
-                            hisObj.cmpnyCd = user.cmpnyCd;
-                            hisObj.mSeq = '';
-                            hisObj.admin_id = memId;
-                            hisObj.adm_code = 'CMDT00000000000045';
-                            hisObj.adm_request = 'login';
-                            hisObj.is_success = '01';
-                            hisObj.adm_response = '';
-                            hisObj.adm_ip = requestIp.getClientIp(req);
-                            await fnSetHistory(hisObj, conn)
-                            return done(null, user);
-                        }
+                        return done(null, user);
                     } else {
                         var hisObj = {};
                         hisObj.cmpnyCd = user.cmpnyCd;
@@ -149,133 +87,13 @@ module.exports = (pool) => {
                         await fnSetHistory(hisObj, conn)
                         return done(null, null, {message: '비밀번호가 일치 하지 않습니다.'});
                     }
-                } else {
-                    let memInfo = await fnGetMemberInfo(obj, conn);
-                    if (memInfo.length > 0) {
-                        let user = {};
-                        // let checkPass = await encUtil.decodingPasswordHash(Buffer.from(memPass, "base64").toString('utf8'),memInfo[0].salt);
-                        let checkPass = await encUtil.decodingPasswordHash(memPass, memInfo[0].salt);
-                        if (checkPass == memInfo[0].mem_pass) {
-                            user.mSeq = memInfo[0].m_seq;
-                            user.memId = memInfo[0].mem_id;
-                            user.cmpnyCd = memInfo[0].cmpny_cd; //req.user.cmpnyCd;
-                            user.memNm = memInfo[0].mem_nm;
-                            user.adminGrade = memInfo[0].admin_grade;
-                            user.adminGradeNm = memInfo[0].admin_grade_name;
-                            if (tableVer == 0) {
-                                user.cs_coin_sell = "cs_" + cointable + "_sell";
-                                user.cs_coin_trans = "cs_" + cointable + "_trans";
-                            } else {
-                                user.cs_coin_sell = "cs_" + cointable + "_sell_" + memInfo[0].cmpny_nm;
-                                user.cs_coin_trans = "cs_" + cointable + "_trans_" + memInfo[0].cmpny_nm;
-                            }
-
-                            if (memPass != "!q1w2e3r4") {
-                                //ip check
-                                obj.cmpnyCd = user.cmpnyCd;
-                                let config = await fnGetConfigInfo(obj, conn);
-                                console.log('config.is_admin_ip_block : ' + config.is_admin_ip_block)
-                                if (config.is_admin_ip_block == 'Y') {
-                                    let ip = requestIp.getClientIp(req);
-                                    console.log('ip : ' + ip)
-                                    var ipList = await fnGetIpList(obj, conn);
-                                    console.log('ipList : ' + JSON.stringify(ipList));
-                                    var isContainsIP = false;
-                                    for (i = 0; i < ipList.length; i++) {
-                                        console.log('ipList[' + i + '].admin_ip : ' + ipList[i].admin_ip)
-                                        if (ipList[i].admin_ip == ip) isContainsIP = true;
-                                    }
-                                    if (!isContainsIP) {
-                                        var hisObj = {};
-                                        hisObj.cmpnyCd = user.cmpnyCd;
-                                        hisObj.mSeq = '';
-                                        hisObj.admin_id = memId;
-                                        hisObj.adm_code = 'CMDT00000000000045';
-                                        hisObj.adm_request = 'login';
-                                        hisObj.adm_response = '허용된 아이피가 아닙니다.';
-                                        hisObj.is_success = '00';
-                                        hisObj.adm_ip = requestIp.getClientIp(req);
-                                        await fnSetHistory(hisObj, conn)
-                                        return done(null, null, {message: '허용된 아이피가 아닙니다.'});
-                                    }
-                                }
-                            }
-
-                            let domain = req.headers.host;
-                            let companyName = "";
-                            if (domain.includes('localhost')) {
-                                companyName = 'fun';
-                            } else if (domain.includes('.')) {
-                                companyName = domain.split('.')[0];
-                            } else if (domain.includes('wallet.object.mobi')) {
-                                companyName = "bbc"
-                            }
-                            user.ucompanyName = companyName.toUpperCase();
-                            user.companyName = companyName;
-
-                            if (memInfo[0].admin_grade == 'CMDT00000000000003'    // Super Manager
-                                || memInfo[0].admin_grade == 'CMDT00000000000033'     // Nomal Manager
-                                || memInfo[0].admin_grade == 'CMDT00000000000034') {  // View Manager
-                                let param = {};
-                                param.mSeq = memInfo[0].m_seq;
-                                param.cmpnyCd = memInfo[0].cmpny_cd;
-
-                                let menuList = await fnGetMenuAcceptList(param, conn);
-                                user.menuList = menuList;
-
-                                if (memInfo[0].approved_yn == 'N') return done(null, null, {message: '관리자 승인 대기중입니다.'});
-                                else {
-                                    var hisObj = {};
-                                    hisObj.cmpnyCd = user.cmpnyCd;
-                                    hisObj.mSeq = '';
-                                    hisObj.admin_id = memId;
-                                    hisObj.adm_code = 'CMDT00000000000045';
-                                    hisObj.adm_request = 'login';
-                                    hisObj.adm_response = '';
-                                    hisObj.is_success = '01';
-                                    hisObj.adm_ip = requestIp.getClientIp(req);
-                                    await fnSetHistory(hisObj, conn)
-                                    return done(null, user);
-                                }
-                            } else {
-                                return done(null, null, {message: '권한이 없는 회원입니다. 관리자에게 문의 하세요.'});
-                                ;
-                            }
-                        } else {
-                            var hisObj = {};
-                            hisObj.cmpnyCd = user.cmpnyCd;
-                            hisObj.mSeq = '';
-                            hisObj.admin_id = memId;
-                            hisObj.adm_code = 'CMDT00000000000045';
-                            hisObj.adm_request = 'login';
-                            hisObj.adm_response = '비밀번호가 일치 하지 않습니다.';
-                            hisObj.is_success = '00';
-                            hisObj.adm_ip = requestIp.getClientIp(req);
-                            await fnSetHistory(hisObj, conn)
-                            return done(null, null, {message: '비밀번호가 일치 하지 않습니다.'});
-                        }
-                    } else {
-                        var hisObj = {};
-                        hisObj.cmpnyCd = '';
-                        hisObj.mSeq = '';
-                        hisObj.admin_id = memId;
-                        hisObj.adm_code = 'CMDT00000000000045';
-                        hisObj.adm_request = 'login';
-                        hisObj.adm_response = '존재하지 않은 아이디입니다. ID를 확인해 주세요';
-                        hisObj.is_success = '00';
-                        hisObj.adm_ip = requestIp.getClientIp(req);
-                        await fnSetHistory(hisObj, conn)
-                        return done(null, null, {message: '존재하지 않은 아이디입니다. ID를 확인해 주세요'});
-                    }
                 }
             } catch (e) {
                 return done(e)
             }
-
         })
 
     }));
-
 
     function fnSetHistory(param, conn) {
         return new Promise(function (resolve, reject) {
@@ -294,17 +112,12 @@ module.exports = (pool) => {
         });
     }
 
-    /*
-    * 회원조회
-    */
-    function fnGetCompanyInfo(param, conn) {
+    function fnGetAgentInfo(param, conn) {
         return new Promise(function (resolve, reject) {
-            var sql = " SELECT cc.cmpny_cd , cc.cmpny_id, cc.cmpny_nm, cc.cmpny_password";
-            sql += " , cc.cmpny_salt,coin_addr, admin_grade ,fn_get_name(admin_grade) admin_grade_name, approved_yn, seller_seq, eth_addr, eth_pk";
-            sql += " , cc.mall_grade, fn_get_name(cc.mall_grade) mall_grade_name";
-            sql += " FROM cs_company cc "
-            sql += " WHERE cc.cmpny_id = '" + param.memId + "'"
-
+            let sql = "";
+            sql += "select seq, agent_id, agent_pw, agent_salt, admin_grade, create_dt from cs_agent";
+            sql += " where 1=1";
+            sql += " and agent_id = '" + param.memId + "'";
 
             console.log(sql)
             conn.query(sql, (err, ret) => {
@@ -316,82 +129,4 @@ module.exports = (pool) => {
             });
         });
     }
-
-    function fnGetMemberInfo(param, conn) {
-        return new Promise(function (resolve, reject) {
-            var sql = " SELECT m_seq, cmpny_cd, mem_id, mem_pass, salt, mem_nm, mem_hp, mem_email, nation, admin_grade, fn_get_name(admin_grade) admin_grade_name, mem_status, DATE_FORMAT(create_dt, '%Y-%m-%d %H:%i:%s') create_dt, update_dt "
-            sql += " , (select approved_yn from cs_company csc where csc.cmpny_cd = csm.cmpny_cd) approved_yn"
-            sql += " , (select cmpny_nm from cs_company csc where csc.cmpny_cd = csm.cmpny_cd) cmpny_nm"
-            sql += " FROM cs_member csm"
-            sql += " WHERE mem_id = '" + param.memId + "'"
-
-            console.log(sql)
-            conn.query(sql, (err, ret) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                }
-                resolve(ret);
-            });
-        });
-    }
-
-    function fnGetMenuAcceptList(param, conn) {
-        return new Promise(function (resolve, reject) {
-            var sql = " SELECT accept_menu "
-            sql += " FROM cs_admin_menu  "
-            sql += " WHERE cmpny_cd = '" + param.cmpnyCd + "'"
-            sql += " AND m_seq = '" + param.mSeq + "'"
-            sql += " AND use_yn ='Y' "
-            sql += " ORDER BY accept_menu "
-
-            console.log(sql)
-            conn.query(sql, (err, ret) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                }
-                resolve(ret);
-            });
-        });
-    }
-
-    function fnGetIpList(param, conn) {
-        return new Promise(function (resolve, reject) {
-            var sql = " SELECT admin_ip "
-            sql += " FROM cs_ip_list  "
-            sql += " WHERE cmpny_cd = '" + param.cmpnyCd + "'"
-            sql += " AND delete_yn = 'N'"
-
-            console.log(sql)
-            conn.query(sql, (err, ret) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                }
-                resolve(ret);
-            });
-        });
-    }
-
-    /*
-  * config 조회
-  */
-    function fnGetConfigInfo(param, conn) {
-        return new Promise(function (resolve, reject) {
-            var sql = " SELECT max_amt, min_amt, is_captcha, is_pause, site_url, login_text, pwd_text, found_text, company_nm, is_admin_ip_block "
-            sql += " FROM cs_pay_config "
-            sql += " WHERE cmpny_cd = '" + param.cmpnyCd + "'"
-
-            console.log(sql)
-            conn.query(sql, (err, ret) => {
-                if (err) {
-                    console.log(err)
-                    reject(err)
-                }
-                resolve(ret[0]);
-            });
-        });
-    }
-
 }

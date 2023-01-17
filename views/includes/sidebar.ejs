@@ -1,7 +1,7 @@
 <aside id="sidebar" class="sidebar">
     <ul class="sidebar-nav" id="sidebar-nav">
         <li class="nav-item">
-            <a class="nav-link " href="/d/view">
+            <a class="nav-link collapsed" id="dashboard" href="/d/view">
                 <i class="bi bi-grid"></i>
                 <span>대시보드</span>
             </a>
@@ -14,13 +14,13 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="users-profile.html">
+            <a class="nav-link collapsed" id="company-list" href="/c/view">
                 <i class="bi bi-diagram-3"></i>
                 <span>회원사관리</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link collapsed" href="pages-faq.html">
+            <a class="nav-link collapsed" id="member-list" href="/m/view">
                 <i class="bi bi-person-square"></i>
                 <span>회원관리</span>
             </a>
@@ -41,3 +41,23 @@
     </ul>
 
 </aside>
+
+<script>
+    $(function () {
+        $(".nav-link").addClass('collapsed');
+        let menu = '<%=basicInfo.menu%>';
+        if (menu == 'MENU00000000000001') {
+            $("#dashboard").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000002') {
+            $("#kyc-list").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000003') {
+            $("#company-list").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000004') {
+            $("#member-list").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000005') {
+            $("#trade-list").removeClass('collapsed');
+        }  else if(menu == 'MENU00000000000011'){
+            $("#qna-list").removeClass('collapsed');
+        }
+    })
+</script>

@@ -26,13 +26,13 @@ router.post("/signin", (req, res, next) => {
             let alertMessage = {}
             alertMessage.success = false;
             alertMessage.message = info.message;
+            console.log('asdasd:',alertMessage)
 
             req.flash("alertMessage", alertMessage);
             return res.redirect("/login");
         } catch (e) {
             // pass
         }
-
 
         return req.login(user, loginError => {
             if (loginError) {
@@ -44,6 +44,15 @@ router.post("/signin", (req, res, next) => {
             return res.redirect(307, "/d/view");
         });
     })(req, res, next);
+});
+
+router.post('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/login');
+});
+router.get('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/login');
 });
 
 module.exports = router;

@@ -20,7 +20,7 @@ exports.view = async (req, res, next) => {
             let obj = {};
 
             let basicInfo = {}
-            basicInfo.title = 'Dashboard';
+            basicInfo.title = 'dashboard';
             basicInfo.menu = 'MENU00000000000001';
             basicInfo.rtnUrl = 'dashboard/index';
             req.basicInfo = basicInfo;
