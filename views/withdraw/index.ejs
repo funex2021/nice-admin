@@ -99,7 +99,7 @@
                                                     <%=Number(el.withdraw_price).toLocaleString('ko-KR')%>
                                                 </td>
                                                 <td>
-<!--                                                   todo 계좌정보 -->
+                                                    <%= el.bank_acc%>
                                                 </td>
                                                 <td>
                                                     <%= el.status_nm%>
@@ -141,13 +141,12 @@
                     <div class="modal-body">
                         <div class="form-group row mb-3">
                             <label class="col-sm-2 col-form-label">가능금액</label>
-                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control">
+                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control" value="<%=Number(basicInfo.agentInfo.balance).toLocaleString('ko-KR')%>" >
                             </div>
                         </div>
                         <div class="form-group row mb-3">
                             <label class="col-sm-2 col-form-label">계좌</label>
-<!--                            todo 계좌 readonly-->
-                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control">
+                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control" value="<%=basicInfo.agentInfo.bank_acc%>">
                             </div>
                         </div>
                         <div class="form-group row mb-3">

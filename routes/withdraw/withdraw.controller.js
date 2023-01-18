@@ -57,10 +57,13 @@ exports.view = async (req, res, next) => {
             status.mstCode = "CMMT00000000000025";
             let statusList = await CommQuery.QGetDtlCodeList(status, conn);
 
+            let agentInfo = await Query.QGetAgentInfo(obj, conn);
+
             let basicInfo = {}
             basicInfo.title = 'withdraw';
             basicInfo.menu = 'MENU00000000000006';
             basicInfo.rtnUrl = 'withdraw/index';
+            basicInfo.agentInfo = agentInfo[0];
             basicInfo.withdrawList = withdrawList;
             basicInfo.statusList = statusList;
             basicInfo.search = search;
@@ -87,18 +90,23 @@ exports.withdrawProc = async (req, res, next) => {
             let obj = {};
             obj.srchOption = 'CMMT00000000000091';
             obj.adminSeq = req.user.adminSeq;
-
-            console.log(obj.srchOption)
-
             let cnt = await Query.QGetWithdrawListCnt(obj, conn);
 
             if(cnt > 0){
                 return res.json(rtnUtil.successFalse("500", "이미 출금요청건이 있습니다."));
             }
 
+            let agetInfo = await Query.QGetAgentInfo(obj, conn);
+            if(agetInfo[0].balance < price ){
+                return res.json(rtnUtil.successFalse("500", "인출가능금액을 초과하였습니다."));
+            }
+
             let ins = {};
             ins.adminSeq = req.user.adminSeq;
             ins.price = price;
+            ins.bank_acc = agetInfo[0].bank_acc;
+            ins.bank_nm = agetInfo[0].bank_nm;
+            ins.acc_nm = agetInfo[0].acc_nm;
 
             await Query.QSetWithdraw(ins , conn);
 
