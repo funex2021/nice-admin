@@ -50,20 +50,22 @@ exports.view = async (req, res, next) => {
     mydb.executeTx(async conn => {
         try {
 
-            let totalPageCount = await Query.QGetSellListCnt(obj, conn);
+            let totalPageCount = await Query.QGetTotalCnt(obj, conn);
 
             let pagination = await pagingUtil.getDynamicPagination(pageIndex, totalPageCount, rowsPerPage)
 
-            let sellList = await Query.QGetSellList(obj, conn);
+            console.log('pagination :>> ', pagination);
 
             let companyListTotal = await Query.QGetCompanyListTotal(obj, conn);
+
+            const tradeInfo = await Query.QGetTradeInfo(obj, conn);
 
             let basicInfo = {}
             basicInfo.title = 'status';
             basicInfo.menu = 'MENU00000000000002';
             basicInfo.rtnUrl = 'status/index';
-            basicInfo.sellList = sellList;
             basicInfo.companyListTotal = companyListTotal;
+            basicInfo.tradeInfo = tradeInfo;
             basicInfo.search = search;
             basicInfo.pagination = pagination;
             req.basicInfo = basicInfo;
