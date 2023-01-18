@@ -58,5 +58,6 @@ router.get('/logout', function (req, res) {
 router.post('/totalMember', isAuthenticated, home.totalMember);
 router.post('/totalCompany', isAuthenticated, home.totalCompany);
 router.post('/totalSell', isAuthenticated, home.totalSell);
+router.post('/withdrawPrice', isAuthenticated, home.withdrawPrice);
 
 module.exports = router;
