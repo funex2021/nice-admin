@@ -7,6 +7,7 @@ const Query = require('./withdraw.sqlmap'); // 여기
 var isNullOrEmpty = require('is-null-or-empty');
 const CONSTS = require(path.join(process.cwd(), '/routes/services/consts'))
 const axios = require('axios');
+const CommQuery = require(path.join(process.cwd(), "/routes/common.sqlmap.js"));
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
@@ -50,20 +51,20 @@ exports.view = async (req, res, next) => {
     mydb.executeTx(async conn => {
         try {
 
-            let totalPageCount = await Query.QGetSellListCnt(obj, conn);
-
+            let totalPageCount = await Query.QGetWithdrawListCnt(obj, conn);
             let pagination = await pagingUtil.getDynamicPagination(pageIndex, totalPageCount, rowsPerPage)
+            let withdrawList = await Query.QGetWithdrawList(obj, conn);
 
-            let sellList = await Query.QGetSellList(obj, conn);
-
-            let companyListTotal = await Query.QGetCompanyListTotal(obj, conn);
+            let status = {};
+            status.mstCode = "CMMT00000000000025";
+            let statusList = await CommQuery.QGetDtlCodeList(status, conn);
 
             let basicInfo = {}
             basicInfo.title = 'trade';
             basicInfo.menu = 'MENU00000000000006';
             basicInfo.rtnUrl = 'withdraw/index';
-            basicInfo.sellList = sellList;
-            basicInfo.companyListTotal = companyListTotal;
+            basicInfo.withdrawList = withdrawList;
+            basicInfo.statusList = statusList;
             basicInfo.search = search;
             basicInfo.pagination = pagination;
             req.basicInfo = basicInfo;

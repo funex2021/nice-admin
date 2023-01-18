@@ -18,19 +18,17 @@
                         <div class="card-body">
                             <br>
                             <div class="row mb-3">
+                                <div class="col-sm-1 text-center" style="padding-top: 5px;">
+                                    <p style="font-weight: bold;">상태</p>
+                                </div>
                                 <div class="col-sm-2">
                                     <select class="form-select" id="srchOption">
                                         <option value="">전체</option>
-                                        <% if (basicInfo.companyListTotal.length> 0) {
-                                        basicInfo.companyListTotal.forEach(function(el, index) { %>
-                                            <option value="<%=el.cmpny_cd%>" <% if (basicInfo.search.srchOption == el.cmpny_cd ) { %> selected <%}%>><%=el.cmpny_id%></option>
+                                        <% if (basicInfo.statusList.length> 0) {
+                                            basicInfo.statusList.forEach(function(el, index) { %>
+                                            <option value="<%=el.cmm_dtl_cd%>" <% if (basicInfo.search.srchOption == el.cmpny_cd ) { %> selected <%}%>><%=el.cmm_dtl_name%></option>
                                         <% })} %>
                                     </select>
-                                </div>
-                                <div class="col-sm-2">
-                                    <div class="input-group mb-3">
-                                        <input type="text" class="form-control" id="srchText" value="<%=basicInfo.search.srchText%>">
-                                    </div>
                                 </div>
                                 <div class="col-sm-2">
                                     <div class="input-group mb-3">
@@ -48,6 +46,11 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <button type="button" class="btn btn-warning" onclick="alert('todo');">출금요청</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
                                     <select class="form-select" id="rowsPerPage" onchange="fnSearch();">
                                         <option value="10" <% if (basicInfo.search.rowsPerPage == '10' ) { %> selected <%}%>>10</option>
                                         <option value="20" <% if (basicInfo.search.rowsPerPage == '20' ) { %> selected <%}%>>20</option>
@@ -65,13 +68,13 @@
                                         <thead>
                                         <tr>
                                             <th scope="col">
-                                                회원사
-                                            </th>
-                                            <th scope="col">
-                                                아이디
+                                                IDX
                                             </th>
                                             <th scope="col">
                                                 금액
+                                            </th>
+                                            <th scope="col">
+                                                계좌정보
                                             </th>
                                             <th scope="col">
                                                 상태
@@ -85,20 +88,20 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <% if (basicInfo.sellList.length> 0) {
-                                        basicInfo.sellList.forEach(function(el, index) { %>
+                                        <% if (basicInfo.withdrawList.length> 0) {
+                                        basicInfo.withdrawList.forEach(function(el, index) { %>
                                             <tr>
                                                 <td>
-                                                    <%= el.cmpny_id%>
+                                                    <%= el.seq%>
                                                 </td>
                                                 <td>
-                                                    <%= el.mem_id%>
+                                                    <%= el.withdraw_price%>
                                                 </td>
                                                 <td>
-                                                    <%= el.buy_num%>
+<!--                                                   todo 계좌정보 -->
                                                 </td>
                                                 <td>
-                                                    <%= el.sell_sts_name%>
+                                                    <%= el.status_nm%>
                                                 </td>
                                                 <td>
                                                     <%= el.create_dt%>
@@ -135,7 +138,6 @@
 </html>
 <script>
     function fnSearch() {
-        let srchText = $('#srchText').val();
         let srchOption = $('#srchOption option:selected').val();
         let pageIndex = $('#pageIndex').val();
         let rowsPerPage = $('#rowsPerPage').val();
@@ -146,18 +148,13 @@
         var form = document.createElement("form");
         form.setAttribute("charset", "UTF-8");
         form.setAttribute("method", "Post"); //Post 방식
-        form.setAttribute("action", "/t/view"); //요청 보낼 주소
+        form.setAttribute("action", "/w/view"); //요청 보낼 주소
 
         var hiddenField1 = document.createElement("input");
         hiddenField1.setAttribute("type", "hidden");
         hiddenField1.setAttribute("name", "pageIndex");
         hiddenField1.setAttribute("value", pageIndex);
         form.appendChild(hiddenField1);
-        var hiddenField2 = document.createElement("input");
-        hiddenField2.setAttribute("type", "hidden");
-        hiddenField2.setAttribute("name", "srchText");
-        hiddenField2.setAttribute("value", srchText);
-        form.appendChild(hiddenField2);
         var hiddenField3 = document.createElement("input");
         hiddenField3.setAttribute("type", "hidden");
         hiddenField3.setAttribute("name", "srchOption");
