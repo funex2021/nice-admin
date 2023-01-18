@@ -59,5 +59,5 @@ router.post('/totalMember', isAuthenticated, home.totalMember);
 router.post('/totalCompany', isAuthenticated, home.totalCompany);
 router.post('/totalSell', isAuthenticated, home.totalSell);
 router.post('/withdrawPrice', isAuthenticated, home.withdrawPrice);
-
+router.post('/changePassword' , isAuthenticated , home.changePassword);
 module.exports = router;

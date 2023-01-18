@@ -1,6 +1,7 @@
 <!-- ======= Header ======= -->
-<header id="header" class="header fixed-top d-flex align-items-center">
 
+<% include ./passmodal.ejs %>
+<header id="header" class="header fixed-top d-flex align-items-center">
     <div class="d-flex align-items-center justify-content-between">
         <a href="/d/view" class="logo d-flex align-items-center">
             <img src="/img/logo.png" alt="">
@@ -103,7 +104,7 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                        <a class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#passModal" style="cursor: pointer;">
                             <i class="bi bi-gear"></i>
                             <span>비밀번호변경</span>
                         </a>

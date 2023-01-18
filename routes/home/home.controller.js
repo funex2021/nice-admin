@@ -10,6 +10,7 @@ const axios = require('axios');
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
+const encUtil = require(path.join(process.cwd(), '/routes/services/encUtil'))
 
 exports.totalMember = async (req, res, next) => {
     let pool = req.app.get('pool');
@@ -121,3 +122,41 @@ exports.withdrawPrice = async (req, res, next) => {
         }
     });
 }
+
+
+
+exports.changePassword = async (req, res, next) => {
+    let pool = req.app.get("pool");
+    let mydb = new Mydb(pool);
+    let { currentPass, memPass } = req.body;
+
+    let obj = {};
+    obj.adminSeq = req.user.adminSeq;
+    obj.currentPass = currentPass;
+    obj.memPass = memPass;
+
+    mydb.executeTx(async (conn) => {
+        try {
+            let memInfo = await Query.QGetAgentInfo(obj, conn);
+            console.log('memInfo' , memInfo);
+            let checkPass = await encUtil.decodingPasswordHash(currentPass, memInfo[0].agent_salt);
+
+            if (checkPass == memInfo[0].agent_pw) {
+                let passInfo = await encUtil.createPasswordHash(obj.memPass);
+                obj.memPass = passInfo.password;
+                obj.salt = passInfo.salt;
+
+                await Query.QUptAgentPassword(obj, conn);
+                conn.commit();
+
+                return res.json(rtnUtil.successTrue("200", "패스워드가 변경 되었습니다. 다시 로그인 해주세요."));
+            } else {
+                return res.json(rtnUtil.successFalse("400", "현재 패스워드가 일치하지 않습니다. 다시 확인해주세요."));
+            }
+        } catch (e) {
+            conn.rollback();
+            logUtil.errObj("changePassword Error", e);
+            next(e);
+        }
+    });
+};

@@ -197,6 +197,44 @@ function fnGetYesterdayRevenueTotalCnt(param, conn) {
     });
 }
 
+function fnGetAgentInfo(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "select seq, agent_id, agent_pw, agent_salt, admin_grade, create_dt from cs_agent";
+        sql += " where 1=1";
+        sql += " and seq = '" + param.adminSeq + "'";
+
+        console.log(sql)
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
+function fnUptAgentPassword(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = `update cs_agent set agent_pw = '${param.memPass}', agent_salt = '${param.salt}' `;
+        sql += " where 1=1";
+        sql += " and seq = '" + param.adminSeq + "'";
+
+        console.log("fnUptPassword :>> ", sql);
+        console.log(sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
 module.exports.QGetMemberTotalCnt = fnGetMemberTotalCnt;
 module.exports.QGetCompanyTotalCnt = fnGetCompanyTotalCnt;
 module.exports.QGetSellTotalCnt = fnGetSellTotalCnt;
@@ -206,3 +244,5 @@ module.exports.QGetYesterdaySellTotalCnt = fnGetYesterdaySellTotalCnt;
 module.exports.QGetYesterdaySellTotal = fnGetYesterdaySellTotal;
 module.exports.QGetRevenueTotalCnt = fnGetRevenueTotalCnt;
 module.exports.QGetYesterdayRevenueTotalCnt = fnGetYesterdayRevenueTotalCnt;
+module.exports.QGetAgentInfo = fnGetAgentInfo;
+module.exports.QUptAgentPassword = fnUptAgentPassword;
