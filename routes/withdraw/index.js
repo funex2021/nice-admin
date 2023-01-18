@@ -13,5 +13,7 @@ var isAuthenticated = function (req, res, next) {
 
 router.get('/view', isAuthenticated, withdraw.view);
 router.post('/view', isAuthenticated, withdraw.view);
+router.post('/withdrawProc', isAuthenticated , withdraw.withdrawProc);
+
 
 module.exports = router;
