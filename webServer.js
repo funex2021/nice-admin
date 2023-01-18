@@ -116,7 +116,7 @@ app.use('/d', require('./routes/dashboard'))
 app.use('/c', require('./routes/company'))
 app.use('/m', require('./routes/member'))
 app.use('/t', require('./routes/trade'))
-
+app.use('/w', require('./routes/withdraw'))
 
 app.use(function (req, res, next) {
     let domain = req.headers.host;
