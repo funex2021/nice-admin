@@ -15,7 +15,7 @@
             </li>
         <%}%>
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/s/view">
+            <a class="nav-link collapsed" id="status" href="/s/view">
                 <i class="bi bi-pencil-square"></i>
                 <span>종합현황</span>
             </a>
@@ -58,7 +58,7 @@
         if (menu == 'MENU00000000000001') {
             $("#dashboard").removeClass('collapsed');
         } else if(menu == 'MENU00000000000002') {
-            $("#kyc-list").removeClass('collapsed');
+            $("#status").removeClass('collapsed');
         } else if(menu == 'MENU00000000000003') {
             $("#company-list").removeClass('collapsed');
         } else if(menu == 'MENU00000000000004') {
