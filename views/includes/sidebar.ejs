@@ -6,6 +6,14 @@
                 <span>대시보드</span>
             </a>
         </li>
+        <% if(user.adminGrade == 'CMDT00000000000001'){%>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/a/view">
+                    <i class="bi bi-wallet-fill"></i>
+                    <span>에이전트 관리</span>
+                </a>
+            </li>
+        <%}%>
         <li class="nav-item">
             <a class="nav-link collapsed" href="/s/view">
                 <i class="bi bi-pencil-square"></i>
@@ -31,12 +39,14 @@
                 <span>회원구매</span>
             </a>
         </li>
+        <% if(user.adminGrade == 'CMDT00000000000002'){%>
         <li class="nav-item">
             <a class="nav-link collapsed" href="/w/view">
                 <i class="bi bi-wallet-fill"></i>
                 <span>에이전트 출금</span>
             </a>
         </li>
+        <%}%>
     </ul>
 
 </aside>

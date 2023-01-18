@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+
+<body>
+    <% include ../includes/header.ejs %>
+    <% include ../includes/sidebar.ejs %>
+    <main id="main" class="main">
+        <div class="pagetitle"><h1>에이전트관리</h1>
+        </div>
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <div class="row mb-3">
+                                <div class="col-sm-1 text-center" style="padding-top: 5px;">
+                                    <p style="font-weight: bold;">상태</p>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="srchOption">
+                                        <option value="">전체</option>
+                                        <% if (basicInfo.statusList.length> 0) {
+                                            basicInfo.statusList.forEach(function(el, index) { %>
+                                            <option value="<%=el.cmm_dtl_cd%>" <% if (basicInfo.search.srchOption == el.cmm_dtl_cd ) { %> selected <%}%>><%=el.cmm_dtl_name%></option>
+                                        <% })} %>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="srtDt" value="<%=basicInfo.search.srtDt%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="endDt" value="<%=basicInfo.search.endDt%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="input-group mb-3">
+                                        <button type="button" class="btn btn-success" onclick="fnSearch();">검색</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#verticalycentered">출금요청</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-1">
+                                    <select class="form-select" id="rowsPerPage" onchange="fnSearch();">
+                                        <option value="10" <% if (basicInfo.search.rowsPerPage == '10' ) { %> selected <%}%>>10</option>
+                                        <option value="20" <% if (basicInfo.search.rowsPerPage == '20' ) { %> selected <%}%>>20</option>
+                                        <option value="50" <% if (basicInfo.search.rowsPerPage == '50' ) { %> selected <%}%>>50</option>
+                                        <option value="100" <% if (basicInfo.search.rowsPerPage == '100' ) { %> selected <%}%>>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1" style="padding-top: 5px;">
+                                    줄보기
+                                </div>
+                            </div>
+                            <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                <div class="dataTable-container">
+                                    <table class="table datatable dataTable-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col" class="text-center">
+                                                IDX
+                                            </th>
+                                            <th scope="col">
+                                                금액
+                                            </th>
+                                            <th scope="col">
+                                                계좌정보
+                                            </th>
+                                            <th scope="col">
+                                                상태
+                                            </th>
+                                            <th scope="col" >
+                                                등록일
+                                            </th>
+                                            <th scope="col" >
+                                                처리일
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% if (basicInfo.withdrawList.length> 0) {
+                                        var num = (basicInfo.pagination.pageIndex - 1) * 10
+                                        basicInfo.withdrawList.forEach(function(el, index) { %>
+                                            <tr>
+                                                <td class="text-center">
+                                                    <%=num + index + 1 %>
+                                                </td>
+                                                <td>
+                                                    <%=Number(el.withdraw_price).toLocaleString('ko-KR')%>
+                                                </td>
+                                                <td>
+                                                    <%= el.bank_acc%>
+                                                </td>
+                                                <td>
+                                                    <%= el.status_nm%>
+                                                </td>
+                                                <td>
+                                                    <%= el.create_dt%>
+                                                </td>
+                                                <td>
+                                                    <%= el.update_dt%>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td class="text-center" colspan="6">
+                                                    데이터가 없습니다.
+                                                </td>
+                                            </tr>
+                                        <% }%>
+                                    </table>
+                                </div>
+                                <% include ../includes/paging.ejs %>
+                                <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="modal fade" id="verticalycentered" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">출금요청</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-2 col-form-label">가능금액</label>
+                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control" value="<%=Number(basicInfo.agentInfo.balance).toLocaleString('ko-KR')%>" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-2 col-form-label">계좌</label>
+                            <div class="col-sm-10"><input type="text" disabled="disabled" class="form-control form-control" value="<%=basicInfo.agentInfo.bank_acc%>">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-2 col-form-label">출금금액</label>
+                            <div class="col-sm-10"><input type="text" class="form-control form-control" id="price" onkeyup="inputOnlyNumber(this)">
+                            </div>
+                        </div>
+                        <div class="form-group row mb-1">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 row offset-md-2">
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4); margin-right: 1px;" data-price='1000'>1천원</button>
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4); margin-right: 1px;" data-price='5000'>5천원</button>
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4); margin-right: 1px;" data-price='10000'>1만원</button>
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4);" data-price='50000'>5만원</button>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-4">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-10 row offset-md-2">
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4);margin-right: 1px;" data-price='100000'>10만원</button>
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4);margin-right: 1px;" data-price='500000'>50만원</button>
+                                <button type="button" class="btn btn-outline-primary btn-money" style="width: calc((100% - 0.65rem) / 4);margin-right: 1px;" data-price='1000000'>100만원</button>
+                                <button type="button" class="btn btn-primary" style="width: calc((100% - 0.65rem) / 4);" onclick="fnResetPrice();">초기화</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" onclick="fnWithdrawProc();">출금 요청</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <% include ../includes/footer.ejs %>
+    <% include ../includes/modal.ejs %>
+    <% include ../includes/js.ejs %>
+</body>
+</html>
+<script>
+    function numberComma(str) {
+        if(null == str){
+            return '';
+        }
+        let split = str.toString().split(".");
+        if (split.length == 2) {
+            let first = split[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            let second = split[1].toString().replace("," , "");
+            return first + "." + second;
+        } else {
+            return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    }
+
+    function noneNumberComma(str) {
+        return str.toString().replaceAll(",", "");
+    }
+
+    function inputOnlyNumber(obj) {
+        obj.value = obj.value.replace(/[^0-9]/g, "");
+    }
+
+    function nullChk(obj) {
+        let rtn = true;
+        if (null == obj || !obj || obj === undefined) {
+            rtn = false;
+        }
+        return rtn;
+    }
+
+
+
+    if($("#price").val() == '') {
+        fnResetPrice();
+    }
+
+    const price = document.querySelector('#price');
+    let moneyBtnList = $(".btn-money");
+
+    for (let i=0; i<moneyBtnList.length; i++){
+        moneyBtnList[i].addEventListener('click', function (){
+            let price_str = noneNumberComma(price.value);
+            let price_num = parseInt(price_str) +  parseInt(this.dataset.price);
+            price.value = numberComma(price_num.toString());
+        })
+    }
+
+    function fnResetPrice(){
+        $("#price").val(0);
+    }
+
+    function fnSearch() {
+        let srchOption = $('#srchOption option:selected').val();
+        let pageIndex = $('#pageIndex').val();
+        let rowsPerPage = $('#rowsPerPage').val();
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+
+
+        var form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "Post"); //Post 방식
+        form.setAttribute("action", "/w/view"); //요청 보낼 주소
+
+        var hiddenField1 = document.createElement("input");
+        hiddenField1.setAttribute("type", "hidden");
+        hiddenField1.setAttribute("name", "pageIndex");
+        hiddenField1.setAttribute("value", pageIndex);
+        form.appendChild(hiddenField1);
+        var hiddenField3 = document.createElement("input");
+        hiddenField3.setAttribute("type", "hidden");
+        hiddenField3.setAttribute("name", "srchOption");
+        hiddenField3.setAttribute("value", srchOption);
+        form.appendChild(hiddenField3);
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", "rowsPerPage");
+        hiddenField4.setAttribute("value", rowsPerPage);
+        form.appendChild(hiddenField4);
+        var hiddenField5 = document.createElement("input");
+        hiddenField5.setAttribute("type", "hidden");
+        hiddenField5.setAttribute("name", "srtDt");
+        hiddenField5.setAttribute("value", srtDt);
+        form.appendChild(hiddenField5);
+        var hiddenField6 = document.createElement("input");
+        hiddenField6.setAttribute("type", "hidden");
+        hiddenField6.setAttribute("name", "endDt");
+        hiddenField6.setAttribute("value", endDt);
+        form.appendChild(hiddenField6);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function fnWithdrawProc(){
+        let price_val = $("#price").val();
+        let price = noneNumberComma(price_val);
+
+        let chk = true;
+        if(price <= 0){
+            alertModal('출금 금액을 입력해 주세요.');
+            chk = false;
+        }
+
+        if(chk){
+            wrapWindowByMaskShow();
+            let data = {};
+            data.price = price;
+
+            $.ajax({
+                url: "/w/withdrawProc",
+                dataType: "json",
+                type: "POST",
+                data: data,
+                success: function(result) {
+                    wrapWindowByMaskHide();
+                    if (result.success) {
+                        fnResetPrice();
+                        fnWithdrawAlert();
+                    } else {
+                        alertModal(result.message);
+                    }
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    wrapWindowByMaskHide();
+                },
+            });
+        }
+    }
+
+
+    function fnWithdrawAlert() {
+        Swal.fire({
+            text: '출금신청이 완료되었습니다.',
+            confirmButtonText: "확인",
+            showCancelButton: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+        fnEventPrevent();
+    }
+
+    function fnEventPrevent(event) {
+        if (!window.event) {
+            return false;
+        } else {
+            window.event.returnValue = false; //IE
+        }
+    }
+
+
+
+</script>
