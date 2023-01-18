@@ -8,7 +8,7 @@
         </li>
         <% if(user.adminGrade == 'CMDT00000000000001'){%>
             <li class="nav-item">
-                <a class="nav-link collapsed" href="/a/view">
+                <a class="nav-link collapsed" id="agent-list" href="/a/view">
                     <i class="bi bi-wallet-fill"></i>
                     <span>에이전트 관리</span>
                 </a>
@@ -41,7 +41,7 @@
         </li>
         <% if(user.adminGrade == 'CMDT00000000000002'){%>
         <li class="nav-item">
-            <a class="nav-link collapsed" href="/w/view">
+            <a class="nav-link collapsed" id="withdraw-list" href="/w/view">
                 <i class="bi bi-wallet-fill"></i>
                 <span>에이전트 출금</span>
             </a>
@@ -67,6 +67,10 @@
             $("#trade-list").removeClass('collapsed');
         }  else if(menu == 'MENU00000000000011'){
             $("#qna-list").removeClass('collapsed');
+        }  else if(menu == 'MENU00000000000006'){
+            $("#withdraw-list").removeClass('collapsed');
+        }  else if(menu == 'MENU00000000000007'){
+            $("#agent-list").removeClass('collapsed');
         }
     })
 </script>
