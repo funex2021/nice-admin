@@ -44,15 +44,23 @@ function fnGetCompanyTotalCnt(param, conn) {
 function fnGetSellTotalCnt(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select count(1) cnt from cs_coin_sell_log ccsl";
+        sql += "select count(1) cnt from ("
+        sql += " select ccsl.seq, date_format(ccsl.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_log ccsl";
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
-        sql += " and sell_sts = 'CMDT00000000000026'";
+        sql += " and ccsl.sell_sts = 'CMDT00000000000026'";
+        sql += " union all";
+        sql += " select ccst.seq, date_format(ccst.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_today ccst";
+        sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
+        sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
+        sql += " and ccst.sell_sts = 'CMDT00000000000026'";
+        sql += " ) t";
+        sql += " where 1=1";
         if (param.adminGrade == 'CMDT00000000000002') {
-            sql += " and cc.agent_seq = '" + param.adminSeq + "'";
+            sql += " and t.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and ccsl.create_dt between date_format(now(), '%Y-%m-01') and date_format(now(), '%Y-%m-%d');"
+        sql += " and t.create_dt between date_format(now(), '%Y-%m-01') and date_format(now(), '%Y-%m-%d')";
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -68,15 +76,23 @@ function fnGetSellTotalCnt(param, conn) {
 function fnGetSellTotal(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select ifnull(sum(ccsl.buy_num), 0) cnt from cs_coin_sell_log ccsl";
+        sql += "select ifnull(sum(t.buy_num), 0) cnt from ("
+        sql += " select ccsl.seq, date_format(ccsl.create_dt, '%Y-%m-%d') create_dt, ccsl.buy_num from cs_coin_sell_log ccsl";
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
-        sql += " and sell_sts = 'CMDT00000000000026'";
+        sql += " and ccsl.sell_sts = 'CMDT00000000000026'";
+        sql += " union all";
+        sql += " select ccst.seq, date_format(ccst.create_dt, '%Y-%m-%d') create_dt, ccst.buy_num from cs_coin_sell_today ccst";
+        sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
+        sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
+        sql += " and ccst.sell_sts = 'CMDT00000000000026'";
+        sql += " ) t";
+        sql += " where 1=1";
         if (param.adminGrade == 'CMDT00000000000002') {
-            sql += " and cc.agent_seq = '" + param.adminSeq + "'";
+            sql += " and t.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and ccsl.create_dt between date_format(now(), '%Y-%m-01') and date_format(now(), '%Y-%m-%d');"
+        sql += " and t.create_dt between date_format(now(), '%Y-%m-01') and date_format(now(), '%Y-%m-%d')";
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -107,18 +123,17 @@ function fnGetWithdrawPrice(param, conn) {
     });
 }
 
-function fnGetYesterdaySellTotalCnt(param, conn) {
+function fnGetTodaySellTotalCnt(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select ifnull(sum(ccsl.buy_num), 0) cnt from cs_coin_sell_log ccsl";
-        sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
+        sql += "select count(1) cnt from cs_coin_sell_today ccst";
+        sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
-        sql += " and sell_sts = 'CMDT00000000000026'";
+        sql += " and ccst.sell_sts = 'CMDT00000000000026'";
         if (param.adminGrade == 'CMDT00000000000002') {
             sql += " and cc.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and ccsl.create_dt between date_format(date_add(now(), interval -1 day), '%Y-%m-%d') and date_format(now(), '%Y-%m-%d');"
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -131,18 +146,17 @@ function fnGetYesterdaySellTotalCnt(param, conn) {
     });
 }
 
-function fnGetYesterdaySellTotal(param, conn) {
+function fnGetTodaySellTotal(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select ifnull(sum(ccsl.buy_num), 0) cnt from cs_coin_sell_log ccsl";
-        sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
+        sql += "select ifnull(sum(ccst.buy_num), 0) cnt from cs_coin_sell_today ccst";
+        sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
-        sql += " and sell_sts = 'CMDT00000000000026'";
+        sql += " and ccst.sell_sts = 'CMDT00000000000026'";
         if (param.adminGrade == 'CMDT00000000000002') {
             sql += " and cc.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and ccsl.create_dt between date_format(date_add(now(), interval -1 day), '%Y-%m-%d') and date_format(now(), '%Y-%m-%d');"
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -240,8 +254,10 @@ module.exports.QGetCompanyTotalCnt = fnGetCompanyTotalCnt;
 module.exports.QGetSellTotalCnt = fnGetSellTotalCnt;
 module.exports.QGetSellTotal = fnGetSellTotal;
 module.exports.QGetWithdrawPrice = fnGetWithdrawPrice;
-module.exports.QGetYesterdaySellTotalCnt = fnGetYesterdaySellTotalCnt;
-module.exports.QGetYesterdaySellTotal = fnGetYesterdaySellTotal;
+
+module.exports.QGetTodaySellTotalCnt = fnGetTodaySellTotalCnt;
+module.exports.QGetTodaySellTotal = fnGetTodaySellTotal;
+
 module.exports.QGetRevenueTotalCnt = fnGetRevenueTotalCnt;
 module.exports.QGetYesterdayRevenueTotalCnt = fnGetYesterdayRevenueTotalCnt;
 module.exports.QGetAgentInfo = fnGetAgentInfo;

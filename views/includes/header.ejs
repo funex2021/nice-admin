@@ -37,8 +37,8 @@
                         <div class="ps-3 row mt-1">
                             <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellMonthCnt">이번달입금(0건)</p>
                             <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellMonthPrice">0원</p>
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellYesterdayCnt">어제입금(0건)</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellYesterdayPrice">0원</p>
+                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellTodayCnt">어제입금(0건)</p>
+                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellTodayPrice">0원</p>
                         </div>
                     </div>
                 </div>
@@ -202,8 +202,8 @@
                 if (result.success) {
                     $("#sellMonthCnt").html('이번달입금('+addComma(result.data.totalSellCnt)+'건)')
                     $("#sellMonthPrice").html(addComma(result.data.totalSell)+'원')
-                    $("#sellYesterdayCnt").html('어제입금('+addComma(result.data.totalSellCnt)+'건)')
-                    $("#sellYesterdayPrice").html(addComma(result.data.totalSell)+'원')
+                    $("#sellTodayCnt").html('오늘입금('+addComma(result.data.todayTotalSellCnt)+'건)')
+                    $("#sellTodayPrice").html(addComma(result.data.todayTotalSell)+'원')
                     $("#revenueMonthPrice").html(addComma(result.data.totalRevenue)+'원')
                     $("#revenueYesterdayPrice").html(addComma(result.data.yesterdayTotalRevenue)+'원')
                 }
