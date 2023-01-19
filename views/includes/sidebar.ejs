@@ -13,6 +13,12 @@
                     <span>에이전트 관리</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" id="agentWithdraw-list" href="/a/withdraw">
+                    <i class="bi bi-card-list"></i>
+                    <span>에이전트 출금신청</span>
+                </a>
+            </li>
         <%}%>
         <li class="nav-item">
             <a class="nav-link collapsed" id="status" href="/s/view">
@@ -65,12 +71,14 @@
             $("#member-list").removeClass('collapsed');
         } else if(menu == 'MENU00000000000005') {
             $("#trade-list").removeClass('collapsed');
-        }  else if(menu == 'MENU00000000000011'){
-            $("#qna-list").removeClass('collapsed');
-        }  else if(menu == 'MENU00000000000006'){
+        } else if(menu == 'MENU00000000000006'){
             $("#withdraw-list").removeClass('collapsed');
-        }  else if(menu == 'MENU00000000000007'){
+        } else if(menu == 'MENU00000000000007'){
             $("#agent-list").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000008'){
+            $("#agentWithdraw-list").removeClass('collapsed');
+        } else if(menu == 'MENU00000000000011'){
+            $("#qna-list").removeClass('collapsed');
         }
     })
 </script>

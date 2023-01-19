@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../includes/cdn.ejs %>
+</head>
+
+<body>
+    <% include ../includes/header.ejs %>
+    <% include ../includes/sidebar.ejs %>
+    <main id="main" class="main">
+        <div class="pagetitle"><h1>에이전트 출금신청</h1>
+        </div>
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <br>
+                            <div class="row mb-3">
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="srchOption">
+                                        <option value="" <% if (basicInfo.search.srchOption == '' ) { %> selected <%}%>>전체</option>
+                                        <% if (basicInfo.agentList.length> 0) {
+                                        basicInfo.agentList.forEach(function(el, index) { %>
+                                            <option value="<%=el.seq%>" <% if (basicInfo.search.srchOption == el.seq ) { %> selected <%}%>><%=el.agent_id%></option>
+                                        <% })} %>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="srtDt" value="<%=basicInfo.search.srtDt%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div class="input-group mb-3">
+                                        <input type="date" class="form-control" id="endDt" value="<%=basicInfo.search.endDt%>">
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="input-group mb-3">
+                                        <button type="button" class="btn btn-success" onclick="fnSearch();">검색</button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <select class="form-select" id="rowsPerPage" onchange="fnSearch();">
+                                        <option value="10" <% if (basicInfo.search.rowsPerPage == '10' ) { %> selected <%}%>>10</option>
+                                        <option value="20" <% if (basicInfo.search.rowsPerPage == '20' ) { %> selected <%}%>>20</option>
+                                        <option value="50" <% if (basicInfo.search.rowsPerPage == '50' ) { %> selected <%}%>>50</option>
+                                        <option value="100" <% if (basicInfo.search.rowsPerPage == '100' ) { %> selected <%}%>>100</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-1" style="padding-top: 5px;">
+                                    줄보기
+                                </div>
+                            </div>
+                            <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
+                                <div class="dataTable-container">
+                                    <table class="table datatable dataTable-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                아이디
+                                            </th>
+                                            <th scope="col">
+                                                금액
+                                            </th>
+                                            <th scope="col">
+                                                계좌정보
+                                            </th>
+                                            <th scope="col">
+                                                상태
+                                            </th>
+                                            <th scope="col">
+                                                등록일
+                                            </th>
+                                            <th scope="col">
+
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <% if (basicInfo.withdrawList.length> 0) {
+                                        basicInfo.withdrawList.forEach(function(el, index) { %>
+                                            <tr>
+                                                <td>
+                                                    <%= el.agent_id%>
+                                                </td>
+                                                <td>
+                                                    <%= el.withdraw_price%>
+                                                </td>
+                                                <td>
+                                                    <%= el.bank_nm%> / <%= el.bank_acc%> / <%= el.acc_nm%>
+                                                </td>
+                                                <td>
+                                                    <%= el.withdraw_status_name%>
+                                                </td>
+                                                <td>
+                                                    <%= el.create_dt%>
+                                                </td>
+                                                <td>
+                                                    <% if (el.withdraw_status == 'CMMT00000000000091') { %>
+                                                        <button type="button" class="btn btn-secondary" onclick="updateWithdrawStatus('<%= el.seq%>','CMMT00000000000092');">승인</button>
+                                                        <button type="button" class="btn btn-danger" onclick="updateWithdrawStatus('<%= el.seq%>','CMMT00000000000093');">취소</button>
+                                                    <% } %>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <% }) %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td class="text-center" colspan="5">
+                                                    데이터가 없습니다.
+                                                </td>
+                                            </tr>
+                                        <% }%>
+                                    </table>
+                                </div>
+                                <% include ../includes/paging.ejs %>
+                                <input type="hidden" id="pageIndex" value="<%=basicInfo.pagination.pageIndex %>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <% include ../includes/footer.ejs %>
+    <% include ../includes/modal.ejs %>
+    <% include ../includes/js.ejs %>
+</body>
+</html>
+<script>
+    function fnSearch() {
+        let srchText = $('#srchText').val();
+        let srchOption = $('#srchOption option:selected').val();
+        let pageIndex = $('#pageIndex').val();
+        let rowsPerPage = $('#rowsPerPage').val();
+        let srtDt = $('#srtDt').val();
+        let endDt = $('#endDt').val();
+
+        var form = document.createElement("form");
+        form.setAttribute("charset", "UTF-8");
+        form.setAttribute("method", "Post"); //Post 방식
+        form.setAttribute("action", "/a/withdraw"); //요청 보낼 주소
+
+        var hiddenField1 = document.createElement("input");
+        hiddenField1.setAttribute("type", "hidden");
+        hiddenField1.setAttribute("name", "pageIndex");
+        hiddenField1.setAttribute("value", pageIndex);
+        form.appendChild(hiddenField1);
+        var hiddenField2 = document.createElement("input");
+        hiddenField2.setAttribute("type", "hidden");
+        hiddenField2.setAttribute("name", "srchText");
+        hiddenField2.setAttribute("value", srchText);
+        form.appendChild(hiddenField2);
+        var hiddenField3 = document.createElement("input");
+        hiddenField3.setAttribute("type", "hidden");
+        hiddenField3.setAttribute("name", "srchOption");
+        hiddenField3.setAttribute("value", srchOption);
+        form.appendChild(hiddenField3);
+        var hiddenField4 = document.createElement("input");
+        hiddenField4.setAttribute("type", "hidden");
+        hiddenField4.setAttribute("name", "rowsPerPage");
+        hiddenField4.setAttribute("value", rowsPerPage);
+        form.appendChild(hiddenField4);
+        var hiddenField5 = document.createElement("input");
+        hiddenField5.setAttribute("type", "hidden");
+        hiddenField5.setAttribute("name", "srtDt");
+        hiddenField5.setAttribute("value", srtDt);
+        form.appendChild(hiddenField5);
+        var hiddenField6 = document.createElement("input");
+        hiddenField6.setAttribute("type", "hidden");
+        hiddenField6.setAttribute("name", "endDt");
+        hiddenField6.setAttribute("value", endDt);
+        form.appendChild(hiddenField6);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function updateWithdrawStatus(seq, status) {
+        let data = {
+            seq: seq,
+            status: status
+        }
+
+        $.ajax({
+            url: "/a/updateWithdrawStatus",
+            dataType: "json",
+            type: "POST",
+            data: data,
+            success: function(result) {
+                if (result.success) {
+                    refreshModal(result.message);
+                } else {
+                    alertModal(result.message);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alertModal("관리자에게 문의하여 주세요.");
+            },
+
+        });
+    }
+</script>

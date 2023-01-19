@@ -14,6 +14,8 @@ var isAuthenticated = function (req, res, next) {
 router.get('/view', isAuthenticated, agent.view);
 router.post('/view', isAuthenticated, agent.view);
 
-
+router.get('/withdraw', isAuthenticated, agent.withdraw);
+router.post('/withdraw', isAuthenticated, agent.withdraw);
+router.post('/updateWithdrawStatus', isAuthenticated, agent.updateWithdrawStatus);
 
 module.exports = router;

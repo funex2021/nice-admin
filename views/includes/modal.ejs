@@ -6,4 +6,14 @@
             'success'
         )
     }
+
+    function refreshModal(text) {
+        Swal.fire({
+            text: text,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        })
+    }
 </script>

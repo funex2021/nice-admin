@@ -78,3 +78,90 @@ exports.view = async (req, res, next) => {
         }
     });
 }
+
+exports.withdraw = async (req, res, next) => {
+    let pool = req.app.get('pool');
+    let mydb = new Mydb(pool);
+
+    let {srchOption, pageIndex, rowsPerPage, srtDt, endDt} = req.body;
+
+    if (pageIndex == "" || pageIndex == null) {
+        pageIndex = 1;
+    }
+    if (rowsPerPage == "" || rowsPerPage == null) {
+        rowsPerPage = 10;
+    }
+
+    if (srtDt == undefined || srtDt == "" || srtDt == null) {
+        endDt = moment().format("YYYY-MM-DD")
+        srtDt = moment().format("YYYY-MM-DD")
+    }
+
+    let obj = {};
+    obj.srchOption = srchOption;
+    obj.pageIndex = parseInt(pageIndex);
+    obj.rowsPerPage = parseInt(rowsPerPage);
+    obj.adminGrade = req.user.adminGrade;
+    obj.adminId = req.user.adminId;
+    obj.adminSeq = req.user.adminSeq;
+    obj.srtDt = srtDt;
+    obj.endDt = endDt;
+
+    let search = {};
+    search.srchOption = srchOption;
+    search.rowsPerPage = parseInt(rowsPerPage);
+    search.srtDt = srtDt;
+    search.endDt = endDt;
+
+    mydb.executeTx(async conn => {
+        try {
+
+            let totalPageCount = await Query.QGetAgentWithdrawListCnt(obj, conn);
+
+            let pagination = await pagingUtil.getDynamicPagination(pageIndex, totalPageCount, rowsPerPage)
+
+            let withdrawList = await Query.QGetAgentWithdrawList(obj, conn);
+
+            let agentList = await Query.QGetAgentList(obj, conn);
+
+            let basicInfo = {}
+            basicInfo.title = 'agent';
+            basicInfo.menu = 'MENU00000000000008';
+            basicInfo.rtnUrl = 'agent/withdraw';
+            basicInfo.withdrawList = withdrawList;
+            basicInfo.agentList = agentList;
+            basicInfo.search = search;
+            basicInfo.pagination = pagination;
+            req.basicInfo = basicInfo;
+
+            next();
+        } catch (e) {
+            logUtil.errObj("agentWithdraw view", e)
+            next(e);
+        }
+    });
+}
+
+exports.updateWithdrawStatus = async (req, res, next) => {
+    let pool = req.app.get("pool");
+    let mydb = new Mydb(pool);
+    let { seq, status } = req.body;
+
+    let obj = {};
+    obj.seq = seq;
+    obj.status = status;
+
+    mydb.executeTx(async (conn) => {
+        try {
+            await Query.QUptWithdrawStatus(obj, conn);
+
+            conn.commit();
+
+            res.json(rtnUtil.successTrue("200", "처리되었습니다."));
+        } catch (e) {
+            conn.rollback();
+            logUtil.errObj("updateWithdrawStatus Error", e);
+            next(e);
+        }
+    });
+};
