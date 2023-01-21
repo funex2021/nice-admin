@@ -11,13 +11,14 @@ const CommQuery = require(path.join(process.cwd(), "/routes/common.sqlmap.js"));
 const moment = require('moment');
 require('moment-timezone');
 moment.tz.setDefault("Asia/Seoul");
+const encUtil = require(path.join(process.cwd(), '/routes/services/encUtil'));
 
 
 exports.view = async (req, res, next) => {
     let pool = req.app.get('pool');
     let mydb = new Mydb(pool);
 
-    let {srchOption, pageIndex, rowsPerPage, srtDt, endDt} = req.body;
+    let {srchOption, srchText , pageIndex, rowsPerPage, srtDt, endDt} = req.body;
 
     if (pageIndex == "" || pageIndex == null) {
         pageIndex = 1;
@@ -26,23 +27,19 @@ exports.view = async (req, res, next) => {
         rowsPerPage = 10;
     }
 
-    if (srtDt == undefined || srtDt == "" || srtDt == null) {
-        endDt = moment().format("YYYY-MM-DD")
-        srtDt = moment().format("YYYY-MM-DD")
-    }
 
     let obj = {};
     obj.srchOption = srchOption;
+    obj.srchText = srchText;
     obj.pageIndex = parseInt(pageIndex);
     obj.rowsPerPage = parseInt(rowsPerPage);
     obj.adminGrade = req.user.adminGrade;
     obj.adminId = req.user.adminId;
     obj.adminSeq = req.user.adminSeq;
-    obj.srtDt = srtDt;
-    obj.endDt = endDt;
 
     let search = {};
     search.srchOption = srchOption;
+    search.srchText = srchText;
     search.rowsPerPage = parseInt(rowsPerPage);
     search.srtDt = srtDt;
     search.endDt = endDt;
@@ -50,30 +47,22 @@ exports.view = async (req, res, next) => {
     mydb.executeTx(async conn => {
         try {
 
-            let totalPageCount = await Query.QGetWithdrawListCnt(obj, conn);
+            let totalPageCount = await Query.QGetAgentListCnt(obj, conn);
             let pagination = await pagingUtil.getDynamicPagination(pageIndex, totalPageCount, rowsPerPage)
-            let withdrawList = await Query.QGetWithdrawList(obj, conn);
-
-            let status = {};
-            status.mstCode = "CMMT00000000000025";
-            let statusList = await CommQuery.QGetDtlCodeList(status, conn);
-
-            let agentInfo = await Query.QGetAgentInfo(obj, conn);
+            let agentList = await Query.QGetAgentList(obj, conn);
 
             let basicInfo = {}
             basicInfo.title = 'agent';
             basicInfo.menu = 'MENU00000000000007';
             basicInfo.rtnUrl = 'agent/index';
-            basicInfo.agentInfo = agentInfo[0];
-            basicInfo.withdrawList = withdrawList;
-            basicInfo.statusList = statusList;
+            basicInfo.agentList = agentList;
             basicInfo.search = search;
             basicInfo.pagination = pagination;
             req.basicInfo = basicInfo;
 
             next();
         } catch (e) {
-            logUtil.errObj("withdraw view", e)
+            logUtil.errObj("agent view", e)
             next(e);
         }
     });
@@ -122,7 +111,7 @@ exports.withdraw = async (req, res, next) => {
 
             let withdrawList = await Query.QGetAgentWithdrawList(obj, conn);
 
-            let agentList = await Query.QGetAgentList(obj, conn);
+            let agentList = await Query.QGetAgentSelectList(obj, conn);
 
             let basicInfo = {}
             basicInfo.title = 'agent';
@@ -165,3 +154,65 @@ exports.updateWithdrawStatus = async (req, res, next) => {
         }
     });
 };
+
+
+exports.agentProc = async (req, res, next) => {
+    let pool = req.app.get("pool");
+    let mydb = new Mydb(pool);
+    let { seq,  agent_id , agent_pw , bank_nm , acc_nm , bank_acc  } = req.body;
+    let obj = {};
+    obj.seq = seq;
+    obj.agent_id = agent_id;
+    obj.agent_pw = agent_pw;
+    obj.bank_nm = bank_nm;
+    obj.acc_nm = acc_nm;
+    obj.bank_acc = bank_acc;
+    obj.admin_grade = 'CMDT00000000000002';
+
+    if(isNullOrEmpty(obj.agent_pw)){
+        let passInfo = await encUtil.createPasswordHash(obj.agent_pw);
+        obj.agent_pw = passInfo.password;
+        obj.agent_salt = passInfo.salt;
+    }
+
+    mydb.executeTx(async (conn) => {
+        try {
+            if(isNullOrEmpty(seq)){
+                await Query.QInsAgent(obj, conn);
+            }else{
+                await Query.QUptAgent(obj, conn);
+            }
+            conn.commit();
+
+            res.json(rtnUtil.successTrue("200", "처리되었습니다."));
+        } catch (e) {
+            conn.rollback();
+            logUtil.errObj("agentProc Error", e);
+            next(e);
+        }
+    });
+};
+
+
+exports.agentInfo = async (req, res, next) => {
+    let pool = req.app.get("pool");
+    let mydb = new Mydb(pool);
+    let { seq } = req.body;
+
+    let obj = {};
+    obj.adminSeq = seq;
+    obj.admin_grade = 'CMDT00000000000002';
+
+    mydb.executeTx(async (conn) => {
+        try {
+            let agentInfo = await Query.QGetAgentInfo(obj , conn);
+
+            res.json(rtnUtil.successTrue("200", "처리되었습니다." , agentInfo[0]));
+        } catch (e) {
+            conn.rollback();
+            logUtil.errObj("agentProc Error", e);
+            next(e);
+        }
+    });
+};
+

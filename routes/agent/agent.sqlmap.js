@@ -1,83 +1,8 @@
 var isNullOrEmpty = require('is-null-or-empty');
-
-function fnGetWithdrawListCnt(param, conn) {
-    return new Promise(function (resolve, reject) {
-        let sql = "";
-        sql += " SELECT count(1) cnt";
-        sql += " FROM cs_agent_withdraw ";
-        sql += " where 1=1 ";
-        sql += " and agent_seq = '" + param.adminSeq + "'";
-        if (!isNullOrEmpty(param.srtDt) && !isNullOrEmpty(param.endDt)) {
-            sql += " and DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') between DATE_FORMAT('" + param.srtDt + "', '%Y-%m-%d') and DATE_FORMAT('" + param.endDt + "', '%Y-%m-%d')"
-        }
-        if (!isNullOrEmpty(param.srchOption)) {
-            sql += " and withdraw_status = '" + param.srchOption + "'";
-        }
-
-        console.log('fnGetWithdrawListCnt ==>', sql);
-        conn.query(sql, (err, ret) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            }
-            resolve(ret[0].cnt);
-        });
-    });
-}
-
-function fnGetWithdrawList(param, conn) {
-    return new Promise(function (resolve, reject) {
-        let sql = "";
-        sql += " SELECT ";
-        sql += " seq , agent_seq , withdraw_price , withdraw_status , fn_get_name(withdraw_status) as status_nm , bank_acc , ";
-        sql += " DATE_FORMAT(create_dt, '%Y-%m-%d %H:%i:%s') create_dt , DATE_FORMAT(update_dt, '%Y-%m-%d %H:%i:%s') update_dt ";
-        sql += " FROM cs_agent_withdraw ";
-        sql += " where 1=1 ";
-        sql += " and agent_seq = '" + param.adminSeq + "'";
-        if (!isNullOrEmpty(param.srtDt) && !isNullOrEmpty(param.endDt)) {
-            sql += " and DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') between DATE_FORMAT('" + param.srtDt + "', '%Y-%m-%d') and DATE_FORMAT('" + param.endDt + "', '%Y-%m-%d')"
-        }
-        if (!isNullOrEmpty(param.srchOption)) {
-            sql += " and withdraw_status = '" + param.srchOption + "'";
-        }
-        sql += " order by create_dt desc";
-        sql += " limit " + (param.pageIndex - 1) * param.rowsPerPage + "," + param.rowsPerPage;
-
-        console.log('fnGetWithdrawList ==>', sql);
-        conn.query(sql, (err, ret) => {
-            if (err) {
-                console.log(err)
-                reject(err)
-            }
-            resolve(ret);
-        });
-    });
-}
-
-
-function fnSetWithdraw(param, conn) {
-    return new Promise(function (resolve, reject) {
-        let sql = " INSERT INTO  cs_agent_withdraw";
-        sql += " (agent_seq , withdraw_price , bank_acc , bank_nm , acc_nm, create_dt ) "
-        sql += " VALUES('" + param.adminSeq + "', '" + param.price +"', '" + param.bank_acc +"', '" + param.bank_nm +"', '" + param.acc_nm + "', now())  ";
-
-        console.log("fnSetWithdraw :>> ", sql);
-        conn.query(sql, (err, ret) => {
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            resolve(ret);
-        });
-    });
-}
-
-
-
 function fnGetAgentInfo(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select seq, balance, bank_nm , bank_acc , acc_nm , create_dt from cs_agent";
+        sql += "select agent_id , seq, balance, bank_nm , bank_acc , acc_nm , create_dt from cs_agent";
         sql += " where 1=1";
         sql += " and seq = '" + param.adminSeq + "'";
 
@@ -92,7 +17,7 @@ function fnGetAgentInfo(param, conn) {
     });
 }
 
-function fnGetAgentWithdrawListCnt(param, conn) {
+function fnGetAgentWithdrawListCnt(param, conn) {QGetAgentInfo
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select count(1) cnt from cs_agent_withdraw caw";
@@ -145,7 +70,7 @@ function fnGetAgentWithdrawList(param, conn) {
     });
 }
 
-function fnGetAgentList(param, conn) {
+function fnGetAgentSelectList(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select ca.seq, ca.agent_id from cs_agent ca";
@@ -183,11 +108,116 @@ function fnUptWithdrawStatus(param, conn) {
     });
 }
 
-module.exports.QGetWithdrawListCnt = fnGetWithdrawListCnt;
-module.exports.QGetWithdrawList = fnGetWithdrawList;
-module.exports.QSetWithdraw = fnSetWithdraw;
+function fnGetAgentListCnt(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += " select count(1) as cnt ";
+        sql += " from cs_agent "
+        sql += " where 1=1 "
+        sql += " and admin_grade != 'CMDT00000000000001'";
+        if (!isNullOrEmpty(param.srchOption)) {
+            if (!isNullOrEmpty(param.srchText)) {
+                if (param.srchOption == '01') {
+                    sql += " and agent_id like '%" + param.srchText + "%'"
+                }else{
+                    sql += " and acc_nm like '%" + param.srchText + "%'"
+                }
+            }
+        }
+
+        console.log("fnGetAgentListCnt :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret[0].cnt);
+        });
+    });
+}
+
+
+function fnGetAgentList(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += " select "
+        sql += " seq , agent_id , agent_pw , agent_salt , admin_grade , balance , bank_nm ,bank_acc , "
+        sql += " acc_nm , date_format(create_dt, '%Y-%m-%d %H:%i:%s') as create_dt , date_format(update_dt, '%Y-%m-%d %H:%i:%s') as update_dt "
+        sql += " from cs_agent "
+        sql += " where 1=1 "
+        sql += " and admin_grade != 'CMDT00000000000001'";
+        if (!isNullOrEmpty(param.srchOption)) {
+            if (!isNullOrEmpty(param.srchText)) {
+                if (param.srchOption == '01') {
+                    sql += " and agent_id like '%" + param.srchText + "%'"
+                }else{
+                    sql += " and acc_nm like '%" + param.srchText + "%'"
+                }
+            }
+        }
+        sql += " order by create_dt desc "
+        sql += " limit " + (param.pageIndex - 1) * param.rowsPerPage + "," + param.rowsPerPage;
+
+        console.log("fnGetAgentList :>> ", sql);
+
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
+function fnInsAgent(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = " INSERT INTO  cs_agent";
+        sql += " ( agent_id , agent_pw , agent_salt , admin_grade  , bank_nm , bank_acc , acc_nm , create_dt ) "
+        sql += " VALUES('" + param.agent_id + "', '" + param.agent_pw +"', '" + param.agent_salt +"', '" + param.admin_grade +"', '" + param.bank_nm +"', '" + param.bank_acc +"', '" + param.acc_nm + "', now())  ";
+
+        console.log("fnUptAgent :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
+function fnUptAgent(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += " update cs_agent set";
+        sql += " update_dt = NOW()";
+        sql += " , bank_nm = '" +param.bank_nm + "'";
+        sql += " , acc_nm = '" +param.acc_nm + "'";
+        sql += " , bank_acc = '" +param.bank_acc + "'";
+        sql += " where 1=1";
+        sql += " and seq = '" + param.seq + "'";
+
+        console.log("fnUptAgent :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
 module.exports.QGetAgentInfo = fnGetAgentInfo;
 module.exports.QGetAgentWithdrawListCnt = fnGetAgentWithdrawListCnt;
 module.exports.QGetAgentWithdrawList = fnGetAgentWithdrawList;
-module.exports.QGetAgentList = fnGetAgentList;
+module.exports.QGetAgentSelectList = fnGetAgentSelectList;
 module.exports.QUptWithdrawStatus = fnUptWithdrawStatus;
+module.exports.QGetAgentListCnt = fnGetAgentListCnt;
+module.exports.QGetAgentList = fnGetAgentList;
+
+module.exports.QInsAgent = fnInsAgent;
+module.exports.QUptAgent = fnUptAgent;
