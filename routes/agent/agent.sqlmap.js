@@ -17,7 +17,7 @@ function fnGetAgentInfo(param, conn) {
     });
 }
 
-function fnGetAgentWithdrawListCnt(param, conn) {QGetAgentInfo
+function fnGetAgentWithdrawListCnt(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select count(1) cnt from cs_agent_withdraw caw";
