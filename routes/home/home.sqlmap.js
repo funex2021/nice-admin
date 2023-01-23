@@ -45,13 +45,13 @@ function fnGetSellTotalCnt(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select count(1) cnt from ("
-        sql += " select ccsl.seq, date_format(ccsl.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_log ccsl";
+        sql += " select ccsl.seq, cc.agent_seq, date_format(ccsl.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_log ccsl";
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
         sql += " and ccsl.sell_sts = 'CMDT00000000000026'";
         sql += " union all";
-        sql += " select ccst.seq, date_format(ccst.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_today ccst";
+        sql += " select ccst.seq, cc.agent_seq , date_format(ccst.create_dt, '%Y-%m-%d') create_dt from cs_coin_sell_today ccst";
         sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " and ccst.sell_sts = 'CMDT00000000000026'";
@@ -77,13 +77,13 @@ function fnGetSellTotal(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select ifnull(sum(t.buy_num), 0) cnt from ("
-        sql += " select ccsl.seq, date_format(ccsl.create_dt, '%Y-%m-%d') create_dt, ccsl.buy_num from cs_coin_sell_log ccsl";
+        sql += " select ccsl.seq, cc.agent_seq,  date_format(ccsl.create_dt, '%Y-%m-%d') create_dt, ccsl.buy_num from cs_coin_sell_log ccsl";
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " where 1=1";
         sql += " and ccsl.sell_sts = 'CMDT00000000000026'";
         sql += " union all";
-        sql += " select ccst.seq, date_format(ccst.create_dt, '%Y-%m-%d') create_dt, ccst.buy_num from cs_coin_sell_today ccst";
+        sql += " select ccst.seq, cc.agent_seq, date_format(ccst.create_dt, '%Y-%m-%d') create_dt, ccst.buy_num from cs_coin_sell_today ccst";
         sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
         sql += " left join cs_company cc on cm.cmpny_cd = cc.cmpny_cd";
         sql += " and ccst.sell_sts = 'CMDT00000000000026'";
