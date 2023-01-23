@@ -13,5 +13,5 @@ var isAuthenticated = function (req, res, next) {
 
 router.get('/view', isAuthenticated, company.view);
 router.post('/view', isAuthenticated, company.view);
-
+router.post('/companyProc' , isAuthenticated , company.companyProc);
 module.exports = router;

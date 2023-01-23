@@ -76,15 +76,25 @@
                                                 <td>
                                                     <%= el.cmpny_status_name%>
                                                 </td>
-                                                <td>
-                                                    <%= el.company_commission%>
-                                                </td>
-                                                <td>
-                                                    <%= el.agent_id%>
-                                                </td>
-                                                <td>
-                                                    <%= el.agent_commission%>
-                                                </td>
+                                                <% if (el.agent_id != null && el.agent_id != ''){%>
+                                                    <td>
+                                                        <%= el.company_commission%>
+                                                    </td>
+                                                    <td>
+                                                        <%= el.agent_id%>
+                                                    </td>
+                                                    <td>
+                                                        <%= el.agent_commission%>
+                                                    </td>
+                                                <%} else {%>
+                                                    <% if (user.adminGrade == 'CMDT00000000000001'){%>
+                                                        <td colspan="3">
+                                                            <button type="button" class="btn btn-primary" onclick="fnMappingModal('<%= el.seq%>')" data-bs-toggle="modal" data-bs-target="#agentMappingModal">에이전트 등록 및 커미션 입력</button>
+                                                        </td>
+                                                    <%} else {%>
+                                                        <td colspan="3"></td>
+                                                    <%}%>
+                                                <%}%>
                                             </tr>
                                         </tbody>
                                         <% }) %>
@@ -105,6 +115,43 @@
                 </div>
             </div>
         </section>
+        <div class="modal fade" id="agentMappingModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">회원사 관리</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="fnResetModal();"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">회원사 커미션</label>
+                            <div class="col-sm-6"><input type="text" id="company_commission" class="form-control form-control" value="" onkeyup="inputOnlyFloatFixed(this)" >
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">에이전트 ID</label>
+                            <div class="col-sm-6">
+                                <select class="form-select" id="agent_seq">
+                                    <% if (basicInfo.agentList.length> 0) {
+                                    basicInfo.agentList.forEach(function(el, index) { %>
+                                    <option value="<%=el.seq%>"><%=el.agent_id%></option>
+                                    <% })} %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-sm-4 col-form-label">에이전트 커미션</label>
+                            <div class="col-sm-6"><input type="text" id="agent_commission" class="form-control form-control" value="" onkeyup="inputOnlyFloatFixed(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button"  class="btn btn-success" onclick="fnCompanyProc();">등록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <input type="hidden" id="companySeq" value="" />
     </main>
 
     <% include ../includes/footer.ejs %>
@@ -149,4 +196,86 @@
         document.body.appendChild(form);
         form.submit();
     }
+
+
+    function inputOnlyFloatFixed(obj) {
+        let prev = '';
+        let regexp = /^\d*(\.\d{0,2})?$/;
+        if(obj.value.search(regexp) == -1){
+            alertModal('소숫점 두자리 까지만 입력 가능합니다.');
+            obj.value = prev;
+        }
+    }
+
+    //모달창 초기화
+    // function resetMappingModal(){
+    //     $("#company_commission").val('');
+    //     $("#agent_seq").val('');
+    //     $("#agent_commission").val('');
+    //     $("#companySeq").val('');
+    // }
+
+    //모달창 띄울때 업체 seq 셋팅
+    function fnMappingModal(seq){
+        $("#companySeq").val(seq);
+    }
+
+    //에이전트 및 커미션 등록
+    function fnCompanyProc(){
+
+        let company_commission  =   $("#company_commission").val();
+        let agent_seq           =   $("#agent_seq").val();
+        let agent_commission    =   $("#agent_commission").val();
+
+        if (!nullChk(company_commission)) {
+            alertModal("회원사 커미션을 입력해주세요");
+            return;
+        }else if (!nullChk(agent_seq)) {
+            alertModal("에이전트 ID를 선택해 주세요.");
+            return;
+        }else if(!nullChk(agent_commission)){
+            alertModal("에이전트 커미션을 입력해주세요.");
+            return;
+        }
+
+        wrapWindowByMaskShow();
+        let data = {};
+        data.seq                    = $("#companySeq").val();
+        data.company_commission     = company_commission;
+        data.agent_seq              = agent_seq;
+        data.agent_commission       = agent_commission;
+
+        $.ajax({
+            url: "/c/companyProc",
+            dataType: "json",
+            type: "POST",
+            data: data,
+            success: function(result) {
+                wrapWindowByMaskHide();
+                if (result.success) {
+                    fnCompanyProcAlert();
+                } else {
+                    alertModal(result.message);
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                wrapWindowByMaskHide();
+            },
+        });
+    }
+
+    function fnCompanyProcAlert() {
+        Swal.fire({
+            text: '처리되었습니다.',
+            confirmButtonText: "확인",
+            showCancelButton: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+        fnEventPrevent();
+    }
+
+
 </script>

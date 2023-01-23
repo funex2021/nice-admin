@@ -28,7 +28,7 @@ function fnGetCompanyListCnt(param, conn) {
 function fnGetCompanyList(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
-        sql += "select cc.cmpny_id, cc.cmpny_status, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = cc.cmpny_status) cmpny_status_name, company_commission, agent_commission";
+        sql += "select cc.seq , cc.cmpny_id, cc.cmpny_status, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = cc.cmpny_status) cmpny_status_name, company_commission, agent_commission";
         sql += ", ca.agent_id";
         sql += " from cs_company cc";
         sql += " left join cs_agent ca on ca.seq = cc.agent_seq";
@@ -77,6 +77,53 @@ function fnGetCompanyListTotal(param, conn) {
     });
 }
 
+
+function fnGetCompanyInfo(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "select cc.cmpny_id, cc.cmpny_status, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = cc.cmpny_status) cmpny_status_name, company_commission, agent_commission";
+        sql += ", ca.agent_id";
+        sql += " from cs_company cc";
+        sql += " left join cs_agent ca on ca.seq = cc.agent_seq";
+        sql += " where 1=1";
+        sql += " and cc.seq = '" + param.seq + "'";
+
+        console.log('fnGetCompanyInfo ==>', sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
+function fnUptCompany(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "update cs_company set";
+        sql += "  company_commission = '" +param.company_commission + "'";
+        sql += ", agent_seq = '" +param.agent_seq + "'";
+        sql += ", agent_commission = '" +param.agent_commission + "'";
+        sql += " where 1=1";
+        sql += " and seq = '" + param.seq + "'";
+
+        console.log("fnUptCompany :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
 module.exports.QGetCompanyListCnt = fnGetCompanyListCnt;
 module.exports.QGetCompanyList = fnGetCompanyList;
 module.exports.QGetCompanyListTotal = fnGetCompanyListTotal;
+module.exports.QGetCompanyInfo = fnGetCompanyInfo;
+module.exports.QUptCompany = fnUptCompany;
