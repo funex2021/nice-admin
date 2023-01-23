@@ -126,6 +126,18 @@
     </nav><!-- End Icons Navigation -->
 </header><!-- End Header -->
 <script>
+    function nullChk(obj) {
+        let rtn = true;
+        if (null == obj || !obj || obj === undefined) {
+            rtn = false;
+        }
+        return rtn;
+    }
+
+    function inputOnlyNumber(obj) {
+        obj.value = obj.value.replace(/[^0-9]/g, "");
+    }
+
     $(function () {
         //총회원수
         getTotalMember();
