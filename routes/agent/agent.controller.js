@@ -142,11 +142,30 @@ exports.updateWithdrawStatus = async (req, res, next) => {
 
     mydb.executeTx(async (conn) => {
         try {
-            await Query.QUptWithdrawStatus(obj, conn);
 
-            conn.commit();
+            let withdrawInfo = await Query.QGetAgentWithdrawInfo(obj , conn);
 
-            res.json(rtnUtil.successTrue("200", "처리되었습니다."));
+            if(withdrawInfo.length <= 0){
+                return res.json(rtnUtil.successFalse("500", "해당 출금은 변경 하실수 없습니다. 관리자에게 문의해주세요"));
+            }else{
+                let balance = withdrawInfo[0].balance;
+                let withdraw_price = withdrawInfo[0].withdraw_price;
+
+                if(status == 'CMMT00000000000092'){ //출금 승인일때
+                    if(parseInt(balance) - parseInt(withdraw_price) < 0){
+                        return res.json(rtnUtil.successFalse("500", "에이전트 잔액이 없어 출금승인할수 없습니다. 관리자에게 문의해주세요"));
+                    }else{
+                        obj.agent_seq = withdrawInfo[0].agent_seq;
+                        obj.withdraw_price = withdraw_price;
+                        await Query.QUptAgentBalance(obj, conn);
+                    }
+                }
+                await Query.QUptWithdrawStatus(obj, conn);
+
+                conn.commit();
+                res.json(rtnUtil.successTrue("200", "처리되었습니다."));
+            }
+
         } catch (e) {
             conn.rollback();
             logUtil.errObj("updateWithdrawStatus Error", e);
@@ -169,7 +188,7 @@ exports.agentProc = async (req, res, next) => {
     obj.bank_acc = bank_acc;
     obj.admin_grade = 'CMDT00000000000002';
 
-    if(isNullOrEmpty(obj.agent_pw)){
+    if(!isNullOrEmpty(obj.agent_pw)){
         let passInfo = await encUtil.createPasswordHash(obj.agent_pw);
         obj.agent_pw = passInfo.password;
         obj.agent_salt = passInfo.salt;

@@ -88,6 +88,28 @@ function fnGetAgentSelectList(param, conn) {
     });
 }
 
+
+function fnUptAgentBalance(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "update cs_agent set";
+        sql += " update_dt = NOW()";
+        sql += ", balance = (balance - '" +param.withdraw_price + "')";
+        sql += " where 1=1";
+        sql += " and seq = '" + param.agent_seq + "'";
+
+        console.log("sql :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
 function fnUptWithdrawStatus(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
@@ -211,6 +233,28 @@ function fnUptAgent(param, conn) {
     });
 }
 
+
+function fnGetAgentWithdrawInfo(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "select caw.seq, caw.withdraw_price, caw.withdraw_status, caw.bank_acc, caw.acc_nm, caw.bank_nm";
+        sql += ", ca.seq as agent_seq , ca.agent_id , ca.balance";
+        sql += " from cs_agent_withdraw caw";
+        sql += " left join cs_agent ca on ca.seq = caw.agent_seq";
+        sql += " where 1=1";
+        sql += " and caw.seq= '" + param.seq + "'";
+        console.log("fnGetAgentWithdrawInfo :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
 module.exports.QGetAgentInfo = fnGetAgentInfo;
 module.exports.QGetAgentWithdrawListCnt = fnGetAgentWithdrawListCnt;
 module.exports.QGetAgentWithdrawList = fnGetAgentWithdrawList;
@@ -221,3 +265,6 @@ module.exports.QGetAgentList = fnGetAgentList;
 
 module.exports.QInsAgent = fnInsAgent;
 module.exports.QUptAgent = fnUptAgent;
+
+module.exports.QGetAgentWithdrawInfo = fnGetAgentWithdrawInfo;
+module.exports.QUptAgentBalance = fnUptAgentBalance;

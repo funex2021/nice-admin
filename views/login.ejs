@@ -32,7 +32,7 @@
                                     <div class="col-12">
                                         <label for="yourUsername" class="form-label">ID</label>
                                         <div class="input-group has-validation">
-                                            <input type="text" class="form-control" id="memId" name="memId" value="admin" required>
+                                            <input type="text" class="form-control" id="memId" name="memId" required>
 
 <!--                                            <div class="invalid-feedback">Please enter your username.</div>-->
                                         </div>
@@ -40,7 +40,7 @@
 
                                     <div class="col-12">
                                         <label for="yourPassword" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="memPass" name="memPass" value="!q1w2e3r4"  required>
+                                        <input type="password" class="form-control" id="memPass" name="memPass" required>
 <!--                                        <div class="invalid-feedback">Please enter your password!</div>-->
                                     </div>
 
@@ -79,7 +79,6 @@
 
 <script>
     $(document).ready(function () {
-        fnLogin();
         $('#memPass').keypress(function (event) {
             if (event.which == 13) {
                 fnLogin();
