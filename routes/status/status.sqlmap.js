@@ -15,7 +15,7 @@ function fnGetTotalCnt(param, conn) {
         }
         if (!isNullOrEmpty(param.srchOption)) sql += `and company_seq = ${param.srchOption} `
         sql += " and DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') between DATE_FORMAT('"+param.srtDt+"', '%Y-%m-%d') and DATE_FORMAT('"+param.endDt+"', '%Y-%m-%d')";
-        sql += `group by agent_seq, create_dt) T `;
+        sql += `group by agent_seq, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d')) T `;
         sql += `order by create_dt desc) a `;
         
         console.log('fnGetTotalCnt ==>', sql);
