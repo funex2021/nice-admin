@@ -59,7 +59,7 @@ function fnGetTradeInfo(param, conn) {
         sql += ` select T.*, `;
         sql += `IFNULL((select sum(withdraw_price) from cs_agent_withdraw where DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') = T.create_dt), 0) withdraw_balance `;
         sql += `from ( `;
-        sql += `select total_balance, sum(balance) total_commission, sum(count) total_count, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') create_dt from `;
+        sql += `select sum(total_balance) as total_balance, sum(balance) total_commission, sum(count) total_count, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') create_dt from `;
         sql += `cs_agent_deposit cad `;
         sql += `where 1=1 `;
         if (param.adminGrade == 'CMDT00000000000002' && !isNullOrEmpty(param.adminSeq)) {
@@ -67,7 +67,7 @@ function fnGetTradeInfo(param, conn) {
         }
         if (!isNullOrEmpty(param.srchOption)) sql += `and company_seq = ${param.srchOption} `
         sql += " and DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') between DATE_FORMAT('"+param.srtDt+"', '%Y-%m-%d') and DATE_FORMAT('"+param.endDt+"', '%Y-%m-%d')";
-        sql += `group by agent_seq, create_dt) T `;
+        sql += `group by agent_seq, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d')) T `;
         sql += `order by create_dt desc `
         sql += `limit ${(param.pageIndex - 1) * param.rowsPerPage}, ${param.rowsPerPage}`;
 
