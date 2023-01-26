@@ -79,6 +79,9 @@
                                             <th scope="col" >
                                                상세
                                             </th>
+                                            <th scope="col" >
+                                                삭제
+                                            </th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -106,6 +109,9 @@
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-primary" onclick="fnInfoModal('<%= el.seq%>')" data-bs-toggle="modal" data-bs-target="#agentmodal">상세</button>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger" onclick="fnAgentDelete('<%= el.seq%>')">삭제</button>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -351,5 +357,41 @@
             window.event.returnValue = false; //IE
         }
     }
+
+    function fnAgentDelete(seq){
+        let data = {};
+        data.seq        = seq;
+
+        $.ajax({
+            url: "/a/agentDelete",
+            dataType: "json",
+            type: "POST",
+            data: data,
+            success: function(result) {
+                if (result.success) {
+                    fnAgenDeleteAlert();
+                } else {
+                    alertModal('잠시후 다시 시도해주세요.');
+                }
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) {
+                alertModal('잠시후 다시 시도해주세요.');
+            },
+        });
+    }
+
+    function fnAgenDeleteAlert() {
+        Swal.fire({
+            text: '에이전트 삭제가 완료되었습니다.',
+            confirmButtonText: "확인",
+            showCancelButton: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                location.reload();
+            }
+        });
+        fnEventPrevent();
+    }
+
 
 </script>

@@ -87,6 +87,8 @@ module.exports = (pool) => {
                         await fnSetHistory(hisObj, conn)
                         return done(null, null, {message: '비밀번호가 일치 하지 않습니다.'});
                     }
+                }else{
+                    return done(null, null, {message: '아이디가 존재하지 않습니다.'});
                 }
             } catch (e) {
                 return done(e)
@@ -118,6 +120,7 @@ module.exports = (pool) => {
             sql += "select seq, agent_id, agent_pw, agent_salt, admin_grade, create_dt from cs_agent";
             sql += " where 1=1";
             sql += " and agent_id = '" + param.memId + "'";
+            sql += " and agent_status = 'CMDT00000000000030' "
 
             console.log(sql)
             conn.query(sql, (err, ret) => {
@@ -130,3 +133,5 @@ module.exports = (pool) => {
         });
     }
 }
+
+

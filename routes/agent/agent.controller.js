@@ -235,3 +235,27 @@ exports.agentInfo = async (req, res, next) => {
     });
 };
 
+
+exports.agentDelete = async (req, res, next) => {
+    let pool = req.app.get("pool");
+    let mydb = new Mydb(pool);
+    let { seq } = req.body;
+    let obj = {};
+    obj.seq = seq;
+    obj.agent_status = 'CMDT00000000000028';
+
+    mydb.executeTx(async (conn) => {
+        try {
+
+            await Query.QDeleteAgent(obj, conn);
+
+            conn.commit();
+
+            res.json(rtnUtil.successTrue("200", "처리되었습니다."));
+        } catch (e) {
+            conn.rollback();
+            logUtil.errObj("agentDelete Error", e);
+            next(e);
+        }
+    });
+};

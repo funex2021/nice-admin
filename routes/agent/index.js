@@ -19,4 +19,6 @@ router.get('/withdraw', isAuthenticated, agent.withdraw);
 router.post('/withdraw', isAuthenticated, agent.withdraw);
 router.post('/updateWithdrawStatus', isAuthenticated, agent.updateWithdrawStatus);
 
+router.post('/agentDelete' , isAuthenticated , agent.agentDelete);
+
 module.exports = router;

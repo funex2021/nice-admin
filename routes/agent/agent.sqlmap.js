@@ -146,6 +146,7 @@ function fnGetAgentListCnt(param, conn) {
                 }
             }
         }
+        sql += " and agent_status = 'CMDT00000000000030'";
 
         console.log("fnGetAgentListCnt :>> ", sql);
         conn.query(sql, (err, ret) => {
@@ -177,6 +178,7 @@ function fnGetAgentList(param, conn) {
                 }
             }
         }
+        sql += " and agent_status = 'CMDT00000000000030'";
         sql += " order by create_dt desc "
         sql += " limit " + (param.pageIndex - 1) * param.rowsPerPage + "," + param.rowsPerPage;
 
@@ -255,6 +257,27 @@ function fnGetAgentWithdrawInfo(param, conn) {
 }
 
 
+function fnDeleteAgent(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += " update cs_agent set";
+        sql += " update_dt = NOW()";
+        sql += " , agent_status = '" +param.agent_status + "'";
+        sql += " where 1=1";
+        sql += " and seq = '" + param.seq + "'";
+
+        console.log("fnDeleteAgent :>> ", sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
+
 module.exports.QGetAgentInfo = fnGetAgentInfo;
 module.exports.QGetAgentWithdrawListCnt = fnGetAgentWithdrawListCnt;
 module.exports.QGetAgentWithdrawList = fnGetAgentWithdrawList;
@@ -268,3 +291,5 @@ module.exports.QUptAgent = fnUptAgent;
 
 module.exports.QGetAgentWithdrawInfo = fnGetAgentWithdrawInfo;
 module.exports.QUptAgentBalance = fnUptAgentBalance;
+
+module.exports.QDeleteAgent = fnDeleteAgent;
