@@ -81,7 +81,7 @@ exports.totalSell = async (req, res, next) => {
             //이번달총수익
             let totalRevenue = await Query.QGetRevenueTotalCnt(obj, conn);
             //어제총수익
-            let yesterdayTotalRevenue = await Query.QGetYesterdayRevenueTotalCnt(obj, conn);
+            let todayTotalRevenue = await Query.QGetTodayRevenueTotalCnt(obj, conn);
 
             let rtnObj = {};
             rtnObj.totalSellCnt = totalSellCnt;
@@ -89,7 +89,7 @@ exports.totalSell = async (req, res, next) => {
             rtnObj.todayTotalSellCnt = todayTotalSellCnt;
             rtnObj.todayTotalSell = todayTotalSell;
             rtnObj.totalRevenue = totalRevenue;
-            rtnObj.yesterdayTotalRevenue = yesterdayTotalRevenue;
+            rtnObj.todayTotalRevenue = todayTotalRevenue;
 
             conn.commit();
             res.json(rtnUtil.successTrue("200", "", rtnObj))

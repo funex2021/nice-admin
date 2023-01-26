@@ -177,7 +177,7 @@ function fnGetRevenueTotalCnt(param, conn) {
         if (param.adminGrade == 'CMDT00000000000002') {
             sql += " and cad.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and cad.create_dt between date_format(now(), '%Y-%m-01') and date_format(now(), '%Y-%m-%d');"
+        sql += " and cad.create_dt between date_format(now(), '%Y-%m-01 00:00:00') and date_format(now(), '%Y-%m-%d 23:59:59')"
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -190,7 +190,7 @@ function fnGetRevenueTotalCnt(param, conn) {
     });
 }
 
-function fnGetYesterdayRevenueTotalCnt(param, conn) {
+function fnGetTodayRevenueTotalCnt(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = "";
         sql += "select ifnull(sum(cad.balance), 0) cnt from cs_agent_deposit cad";
@@ -198,7 +198,7 @@ function fnGetYesterdayRevenueTotalCnt(param, conn) {
         if (param.adminGrade == 'CMDT00000000000002') {
             sql += " and cad.agent_seq = '" + param.adminSeq + "'";
         }
-        sql += " and cad.create_dt between date_format(date_add(now(), interval -1 day), '%Y-%m-%d') and date_format(now(), '%Y-%m-%d');"
+        sql += " and cad.create_dt between date_format(now(), '%Y-%m-%d 00:00:00') and date_format(now(), '%Y-%m-%d 23:59:59')"
 
         console.log('sql ==>', sql);
         conn.query(sql, (err, ret) => {
@@ -259,6 +259,6 @@ module.exports.QGetTodaySellTotalCnt = fnGetTodaySellTotalCnt;
 module.exports.QGetTodaySellTotal = fnGetTodaySellTotal;
 
 module.exports.QGetRevenueTotalCnt = fnGetRevenueTotalCnt;
-module.exports.QGetYesterdayRevenueTotalCnt = fnGetYesterdayRevenueTotalCnt;
+module.exports.QGetTodayRevenueTotalCnt = fnGetTodayRevenueTotalCnt;
 module.exports.QGetAgentInfo = fnGetAgentInfo;
 module.exports.QUptAgentPassword = fnUptAgentPassword;
