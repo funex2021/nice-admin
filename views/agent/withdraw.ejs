@@ -87,7 +87,7 @@
                                                     <%= el.agent_id%>
                                                 </td>
                                                 <td>
-                                                    <%= el.withdraw_price%>
+                                                    <%=Number(el.withdraw_price).toLocaleString('ko-KR')%>
                                                 </td>
                                                 <td>
                                                     <%= el.bank_nm%> / <%= el.bank_acc%> / <%= el.acc_nm%>
