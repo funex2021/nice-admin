@@ -114,12 +114,12 @@
                                 <div class="mt-1">
                                     <ul class="list-inline main-chart mb-0">
                                         <li class="list-inline-item chart-border-left mr-0 border-0">
-                                            <strong class="text-primary" style="font-size: 20px;"><%=basicInfo.monthlyTotal.balance%>원</strong>
+                                            <strong class="text-primary" style="font-size: 20px;"><%=basicInfo.monthlyTotal.balance.toLocaleString()%>원</strong>
                                             <span class="text-muted d-inline-block small ml-3">Income</span>
                                             |
                                         </li>
                                         <li class="list-inline-item chart-border-left mr-0 border-0">
-                                            <strong class="text-muted" style="font-size: 20px;"><%=basicInfo.monthlyTotal.cnt%></strong>
+                                            <strong class="text-muted" style="font-size: 20px;"><%=basicInfo.monthlyTotal.cnt.toLocaleString()%></strong>
                                             <span class="text-muted d-inline-block small ml-3">Sales</span>
                                         </li>
                                     </ul>
@@ -172,12 +172,19 @@
                                             dataLabels: {
                                                 enabled: false
                                             },
+                                            yaxis: {
+                                                labels: {
+                                                    formatter: function (value) {
+                                                        return numberComma(value);
+                                                    }
+                                                },
+                                            },
                                             stroke: {
                                                 curve: 'smooth',
                                                 width: 2
                                             },
                                             xaxis: {
-                                                categories: xArrMonth
+                                                categories: xArrMonth,
                                             },
                                         }).render();
                                     });
@@ -231,6 +238,14 @@
                                     dataLabels: {
                                         enabled: false
                                     },
+                                    yaxis: {
+                                        labels: {
+                                            formatter: function (value) {
+                                                return numberComma(value);
+                                            }
+                                        },
+                                    },
+
                                     xaxis: {
                                         labels: {
                                             formatter: (value) => {
@@ -283,6 +298,13 @@
                                     },
                                     labelLine: {
                                         show: false
+                                    },
+                                    yaxis: {
+                                        labels: {
+                                            formatter: function (value) {
+                                                return numberComma(value);
+                                            }
+                                        },
                                     },
                                     data: totalSellCntList
                                 }]

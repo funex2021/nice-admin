@@ -187,25 +187,6 @@
 </body>
 </html>
 <script>
-    function numberComma(str) {
-        if(null == str){
-            return '';
-        }
-        let split = str.toString().split(".");
-        if (split.length == 2) {
-            let first = split[0].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            let second = split[1].toString().replace("," , "");
-            return first + "." + second;
-        } else {
-            return str.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        }
-    }
-
-    function noneNumberComma(str) {
-        return str.toString().replaceAll(",", "");
-    }
-
-
 
     if($("#price").val() == '') {
         fnResetPrice();
