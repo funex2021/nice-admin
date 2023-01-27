@@ -41,9 +41,7 @@ h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  /*20230127-박상웅*/
-  /*margin-top: 130px;*/
-  margin-top: 179px;
+  margin-top: 130px;
   padding: 20px 30px;
   transition: all 0.3s;
 }
@@ -397,9 +395,7 @@ h6 {
 .header {
   transition: all 0.5s;
   z-index: 997;
-  /*20230127-박상웅*/
-  /*height: 130px;*/
-  height: 179px;
+  height: 130px;
   box-shadow: 0px 2px 20px rgba(1, 41, 112, 0.1);
   background-color: #fff;
   padding-left: 20px;
@@ -415,8 +411,9 @@ h6 {
 }
 
 .header .search-bar {
-  /*20230127-박상웅*/
-  /*min-width: 1400px;*/
+  min-width: 900px;
+  max-width: 1000px;
+  min-width: 1400px;
   padding: 0 20px;
 }
 
@@ -620,9 +617,7 @@ h6 {
 --------------------------------------------------------------*/
 .sidebar {
   position: fixed;
-  /*20230127-박상웅*/
-  /*top: 130px;*/
-  top: 179px;
+  top: 130px;
   left: 0;
   bottom: 0;
   width: 300px;
