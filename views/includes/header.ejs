@@ -9,76 +9,162 @@
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
-
-    <div class="search-bar row">
-        <div class="col-xxl-3 col-3 mt-4">
-            <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
-                <div class="card-body" style="padding:20px 20px 20px 20px">
-                    <h5 class="card-title text-primary" style="color:#4154f1;" id="totalMember">0명</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-people"></i>
+    <% if(user.adminGrade == 'CMDT00000000000002') {%>
+        <div class="search-bar row" style="min-width: 900px;">
+            <div class="col-xxl-3 col-3 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <h5 class="card-title text-primary" style="color:#4154f1;" id="totalMember">0명</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ps-3">
+                                <span class="small pt-1 fw-bold" style="color: #012970;">총 회원수</span>
+                                <span class="text-muted small pt-2 ps-1" id="totalCompany">(0파트너)</span>
+                            </div>
                         </div>
-                        <div class="ps-3">
-                            <span class="small pt-1 fw-bold" style="color: #012970;">총 회원수</span>
-                            <span class="text-muted small pt-2 ps-1" id="totalCompany">(0파트너)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-3 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bx bxs-calendar"></i>
+                            </div>
+                            <div class="ps-3 row mt-1">
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellMonthCnt">이번달입금(0건)</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellMonthPrice">0원</p>
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellTodayCnt">오늘입금(0건)</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellTodayPrice">0원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-3 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bx bxs-calendar-check"></i>
+                            </div>
+                            <div class="ps-3 row mt-1">
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">이번달총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueMonthPrice">0원</p>
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">오늘총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueTodayPrice">0원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-3 col-3 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <h5 class="card-title text-primary" id="withdrawPrice">0원</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="ri-exchange-box-line"></i>
+                            </div>
+                            <div class="ps-3">
+                                <span class="small pt-1 fw-bold" style="color: #012970;">인출가능금액</span>
+                                <span class="text-muted small pt-2 ps-1"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Search Bar -->
+    <% } else {%>
+        <div class="search-bar row">
+            <div class="col-xxl-2 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <h5 class="card-title text-primary" style="color:#4154f1;" id="totalMember">0명</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ps-3">
+                                <span class="small pt-1 fw-bold" style="color: #012970;">총 회원수</span>
+                                <span class="text-muted small pt-2 ps-1" id="totalCompany">(0파트너)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-2 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bx bxs-calendar"></i>
+                            </div>
+                            <div class="ps-3 row mt-1">
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellMonthCnt">이번달입금(0건)</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellMonthPrice">0원</p>
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellTodayCnt">오늘입금(0건)</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellTodayPrice">0원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-2 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bx bxs-calendar-check"></i>
+                            </div>
+                            <div class="ps-3 row mt-1">
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">에이전트 이번달 총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueMonthPrice">0원</p>
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">에이전트 오늘 총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueTodayPrice">0원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-2 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="bx bxs-calendar-check"></i>
+                            </div>
+                            <div class="ps-3 row mt-1">
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">이번달 총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="companyMonthPrice">0원</p>
+                                <p class="small fw-bold" style="color: #012970;margin-bottom:0;">오늘 총수익</p>
+                                <p class="text-primary small fw-bold" style="margin-bottom:0;" id="companyTodayPrice">0원</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xxl-2 mt-4">
+                <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
+                    <div class="card-body" style="padding:20px 20px 20px 20px">
+                        <h5 class="card-title text-primary" id="withdrawPrice">0원</h5>
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                <i class="ri-exchange-box-line"></i>
+                            </div>
+                            <div class="ps-3">
+                                <span class="small pt-1 fw-bold" style="color: #012970;">인출가능금액</span>
+                                <span class="text-muted small pt-2 ps-1"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xxl-3 col-3 mt-4">
-            <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
-                <div class="card-body" style="padding:20px 20px 20px 20px">
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bx bxs-calendar"></i>
-                        </div>
-                        <div class="ps-3 row mt-1">
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellMonthCnt">이번달입금(0건)</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellMonthPrice">0원</p>
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;" id="sellTodayCnt">오늘입금(0건)</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="sellTodayPrice">0원</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xxl-3 col-3 mt-4">
-            <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
-                <div class="card-body" style="padding:20px 20px 20px 20px">
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bx bxs-calendar-check"></i>
-                        </div>
-                        <div class="ps-3 row mt-1">
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">이번달총수익</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueMonthPrice">0원</p>
-                            <p class="small fw-bold" style="color: #012970;margin-bottom:0;">오늘총수익</p>
-                            <p class="text-primary small fw-bold" style="margin-bottom:0;" id="revenueTodayPrice">0원</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xxl-3 col-3 mt-4">
-            <div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%)">
-                <div class="card-body" style="padding:20px 20px 20px 20px">
-                    <h5 class="card-title text-primary" id="withdrawPrice">0원</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="ri-exchange-box-line"></i>
-                        </div>
-                        <div class="ps-3">
-                            <span class="small pt-1 fw-bold" style="color: #012970;">인출가능금액</span>
-                            <span class="text-muted small pt-2 ps-1"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div><!-- End Search Bar -->
-
+    <%}%>
     <nav class="header-nav ms-auto">
         <ul class="d-flex align-items-center">
 
@@ -118,12 +204,10 @@
                             <span>로그아웃</span>
                         </a>
                     </li>
-
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
-
+                </ul>
+            </li>
         </ul>
-    </nav><!-- End Icons Navigation -->
+    </nav>
 </header><!-- End Header -->
 <script>
     function nullChk(obj) {
@@ -216,9 +300,12 @@
                     $("#sellMonthPrice").html(addComma(result.data.totalSell)+'원')
                     $("#sellTodayCnt").html('오늘입금('+addComma(result.data.todayTotalSellCnt)+'건)')
                     $("#sellTodayPrice").html(addComma(result.data.todayTotalSell)+'원')
-                    //todo
                     $("#revenueMonthPrice").html(addComma(result.data.totalRevenue)+'원')
                     $("#revenueTodayPrice").html(addComma(result.data.todayTotalRevenue)+'원')
+
+                    $("#companyMonthPrice").html(addComma(result.data.companyMonthPrice)+'원')
+                    $("#companyTodayPrice").html(addComma(result.data.companyTodayPrice)+'원')
+
                 }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) {

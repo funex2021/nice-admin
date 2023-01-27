@@ -248,6 +248,45 @@ function fnUptAgentPassword(param, conn) {
     });
 }
 
+function fnGetCompanyMonthPrice(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "select ifnull(sum(ccd.balance), 0) cnt from cs_company_deposit ccd";
+        sql += " where 1=1";
+        sql += " and ccd.create_dt between date_format(now(), '%Y-%m-01 00:00:00') and date_format(now(), '%Y-%m-%d 23:59:59')"
+
+        console.log('sql ==>', sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret[0].cnt);
+        });
+    });
+}
+
+
+
+function fnGetCompanyTodayPrice(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = "";
+        sql += "select ifnull(sum(ccd.balance), 0) cnt from cs_company_deposit ccd";
+        sql += " where 1=1";
+        sql += " and ccd.create_dt between date_format(now(), '%Y-%m-%d 00:00:00') and date_format(now(), '%Y-%m-%d 23:59:59')"
+
+        console.log('sql ==>', sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret[0].cnt);
+        });
+    });
+}
+
+
 
 module.exports.QGetMemberTotalCnt = fnGetMemberTotalCnt;
 module.exports.QGetCompanyTotalCnt = fnGetCompanyTotalCnt;
@@ -262,3 +301,7 @@ module.exports.QGetRevenueTotalCnt = fnGetRevenueTotalCnt;
 module.exports.QGetTodayRevenueTotalCnt = fnGetTodayRevenueTotalCnt;
 module.exports.QGetAgentInfo = fnGetAgentInfo;
 module.exports.QUptAgentPassword = fnUptAgentPassword;
+
+module.exports.QGetCompanyMonthPrice = fnGetCompanyMonthPrice;
+module.exports.QGetCompanyTodayPrice = fnGetCompanyTodayPrice;
+

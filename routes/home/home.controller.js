@@ -83,6 +83,16 @@ exports.totalSell = async (req, res, next) => {
             //어제총수익
             let todayTotalRevenue = await Query.QGetTodayRevenueTotalCnt(obj, conn);
 
+            let companyMonthPrice = 0;
+            let companyTodayPrice = 0;
+            if(req.user.adminGrade == 'CMDT00000000000001'){
+                //업체 이번달총수익
+                companyMonthPrice = await Query.QGetCompanyMonthPrice(obj, conn);
+                //업체 어제총수익
+                companyTodayPrice = await Query.QGetCompanyTodayPrice(obj, conn);
+            }
+            console.log('companyMonthPrice' , companyMonthPrice);
+            console.log('companyTodayPrice' , companyTodayPrice);
             let rtnObj = {};
             rtnObj.totalSellCnt = totalSellCnt;
             rtnObj.totalSell = totalSell;
@@ -90,6 +100,8 @@ exports.totalSell = async (req, res, next) => {
             rtnObj.todayTotalSell = todayTotalSell;
             rtnObj.totalRevenue = totalRevenue;
             rtnObj.todayTotalRevenue = todayTotalRevenue;
+            rtnObj.companyMonthPrice = companyMonthPrice;
+            rtnObj.companyTodayPrice = companyTodayPrice;
 
             conn.commit();
             res.json(rtnUtil.successTrue("200", "", rtnObj))
