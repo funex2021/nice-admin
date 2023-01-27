@@ -57,10 +57,11 @@ function fnGetTradeInfo(param, conn) {
     return new Promise(function (resolve, reject) {
         let sql = ``;
         sql += ` select T.*, `;
-        sql += `IFNULL((select sum(withdraw_price) from cs_agent_withdraw where DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') = T.create_dt), 0) withdraw_balance `;
+        sql += `IFNULL((select sum(withdraw_price) from cs_agent_withdraw caw where DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') = T.create_dt and T.agent_seq = caw.agent_seq), 0) withdraw_balance `;
         sql += `from ( `;
-        sql += `select sum(total_balance) as total_balance, sum(balance) total_commission, sum(count) total_count, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') create_dt from `;
-        sql += `cs_agent_deposit cad `;
+        sql += `select sum(total_balance) as total_balance, sum(balance) total_commission, sum(count) total_count, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') create_dt , `;
+        sql += ` cad.agent_seq , (select ca.agent_id from cs_agent ca where ca.seq = cad.agent_seq) as agent_id ` ;
+        sql += `from cs_agent_deposit cad `;
         sql += `where 1=1 `;
         if (param.adminGrade == 'CMDT00000000000002' && !isNullOrEmpty(param.adminSeq)) {
              sql += `and agent_seq = ${param.adminSeq} `;
@@ -82,7 +83,35 @@ function fnGetTradeInfo(param, conn) {
     });
 }
 
+
+function fnGetTradeTotal(param, conn) {
+    return new Promise(function (resolve, reject) {
+        let sql = ``;
+        sql += ` select T.*, `;
+        sql += `IFNULL((select sum(withdraw_price) from cs_agent_withdraw caw where DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') = T.create_dt), 0) withdraw_balance `;
+        sql += `from ( `;
+        sql += `select IFNULL(sum(total_balance),0) as total_balance, IFNULL(sum(balance),0) total_commission, IFNULL(sum(count),0) total_count, DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') create_dt `;
+        sql += `from cs_agent_deposit cad `;
+        sql += `where 1=1 `;
+        if (param.adminGrade == 'CMDT00000000000002' && !isNullOrEmpty(param.adminSeq)) {
+            sql += `and agent_seq = ${param.adminSeq} `;
+        }
+        if (!isNullOrEmpty(param.srchOption)) sql += `and company_seq = ${param.srchOption} `
+        sql += " and DATE_FORMAT(fn_get_time(create_dt), '%Y-%m-%d') between DATE_FORMAT('"+param.srtDt+"', '%Y-%m-%d') and DATE_FORMAT('"+param.endDt+"', '%Y-%m-%d')) T";
+
+        console.log('fnGetTradeInfo ==>', sql);
+        conn.query(sql, (err, ret) => {
+            if (err) {
+                console.log(err)
+                reject(err)
+            }
+            resolve(ret);
+        });
+    });
+}
+
 module.exports.QGetTotalCnt = fnGetTotalCnt;
 module.exports.QGetCompanyListTotal = fnGetCompanyListTotal;
 
 module.exports.QGetTradeInfo = fnGetTradeInfo;
+module.exports.QGetTradeTotal = fnGetTradeTotal;

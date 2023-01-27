@@ -56,6 +56,56 @@
                                     줄보기
                                 </div>
                             </div>
+							<div class="row mb-1">
+								<div class="col-xxl-3 col-md-6">
+									<div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%); height: 70%;">
+										<div class="card-body">
+											<h5 class="card-title" style="font-size: 16px;font-weight: bold;">구매액 합계</h5>
+											<div class="d-flex align-items-center">
+												<div class="ps-3">
+													<h6><%= basicInfo.tradeTotal[0].total_balance.toLocaleString()%>원</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xxl-3 col-md-6">
+									<div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%); height: 70%;">
+										<div class="card-body">
+											<h5 class="card-title" style="font-size: 16px;font-weight: bold;">구매건수 합계</h5>
+											<div class="d-flex align-items-center">
+												<div class="ps-3">
+													<h6><%= basicInfo.tradeTotal[0].total_count.toLocaleString()%>건</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xxl-3 col-md-6">
+									<div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%); height: 70%;">
+										<div class="card-body">
+											<h5 class="card-title bo" style="font-size: 16px;font-weight: bold;">누적커미션 합계</h5>
+											<div class="d-flex align-items-center">
+												<div class="ps-3">
+													<h6><%= basicInfo.tradeTotal[0].total_commission.toLocaleString()%>원</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xxl-3 col-md-6">
+									<div class="card info-card sales-card" style="box-shadow: 0px 0 5px rgb(1 41 112 / 10%); height: 70%;">
+										<div class="card-body">
+											<h5 class="card-title" style="font-size: 16px;font-weight: bold;">출금액 합계</h5>
+											<div class="d-flex align-items-center">
+												<div class="ps-3">
+													<h6><%= basicInfo.tradeTotal[0].withdraw_balance.toLocaleString()%>원</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
                             <div class="dataTable-wrapper dataTable-loading no-footer sortable searchable fixed-columns">
                                 <div class="dataTable-container">
                                     <table class="table datatable dataTable-table">
@@ -64,6 +114,9 @@
                                             <th scope="col">
                                                 날짜 
                                             </th>
+											<th scope="col">
+												에이전트
+											</th>
                                             <th scope="col">
                                                 총구매액 
                                             </th>
@@ -85,6 +138,9 @@
 											    <td>
 												    <%= el.create_dt %>
                                                 </td>
+												<td>
+													<%= el.agent_id %>
+												</td>
 											    <td>
 												    <%= el.total_balance.toLocaleString() %>원
 											    </td>

@@ -53,12 +53,10 @@ exports.view = async (req, res, next) => {
             let totalPageCount = await Query.QGetTotalCnt(obj, conn);
 
             let pagination = await pagingUtil.getDynamicPagination(pageIndex, totalPageCount, rowsPerPage)
-
-            console.log('pagination :>> ', pagination);
-
             let companyListTotal = await Query.QGetCompanyListTotal(obj, conn);
 
             const tradeInfo = await Query.QGetTradeInfo(obj, conn);
+            const tradeTotal = await Query.QGetTradeTotal(obj, conn);
 
             let basicInfo = {}
             basicInfo.title = 'status';
@@ -66,6 +64,7 @@ exports.view = async (req, res, next) => {
             basicInfo.rtnUrl = 'status/index';
             basicInfo.companyListTotal = companyListTotal;
             basicInfo.tradeInfo = tradeInfo;
+            basicInfo.tradeTotal = tradeTotal;
             basicInfo.search = search;
             basicInfo.pagination = pagination;
             req.basicInfo = basicInfo;

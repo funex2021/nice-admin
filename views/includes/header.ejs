@@ -5,7 +5,7 @@
     <div class="d-flex align-items-center justify-content-between">
         <a href="/d/view" class="logo d-flex align-items-center">
             <img src="/img/logo.png" alt="">
-            <span class="d-none d-lg-block">NiceAdmin</span>
+            <span class="d-none d-lg-block">Admin</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -216,6 +216,7 @@
                     $("#sellMonthPrice").html(addComma(result.data.totalSell)+'원')
                     $("#sellTodayCnt").html('오늘입금('+addComma(result.data.todayTotalSellCnt)+'건)')
                     $("#sellTodayPrice").html(addComma(result.data.todayTotalSell)+'원')
+                    //todo
                     $("#revenueMonthPrice").html(addComma(result.data.totalRevenue)+'원')
                     $("#revenueTodayPrice").html(addComma(result.data.todayTotalRevenue)+'원')
                 }
