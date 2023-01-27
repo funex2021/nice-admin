@@ -197,6 +197,9 @@
 
     for (let i=0; i<moneyBtnList.length; i++){
         moneyBtnList[i].addEventListener('click', function (){
+            if(price.value == ''){
+                price.value = 0;
+            }
             let price_str = noneNumberComma(price.value);
             let price_num = parseInt(price_str) +  parseInt(this.dataset.price);
             price.value = numberComma(price_num.toString());
