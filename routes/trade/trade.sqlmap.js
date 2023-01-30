@@ -5,18 +5,18 @@ function fnGetSellListCnt(param, conn) {
         let sql = "";
         sql += "select count(1) cnt from ("
         sql += " select ccsl.buy_num, ccsl.sell_sts, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = ccsl.sell_sts) sell_sts_name, DATE_FORMAT(ccsl.create_dt, '%Y-%m-%d %H:%i:%s') create_dt, DATE_FORMAT(ccsl.update_dt, '%Y-%m-%d %H:%i:%s') update_dt";
-        sql += ", cc.agent_seq, cc.cmpny_id";
+        sql += ", cc.agent_seq, cc.cmpny_id , cc.cmpny_cd";
         sql += ", cm.mem_id";
         sql += " from cs_coin_sell_log ccsl"
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cc.cmpny_cd = cm.cmpny_cd";
         sql += " union all";
         sql += " select ccst.buy_num, ccst.sell_sts, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = ccst.sell_sts) sell_sts_name, DATE_FORMAT(ccst.create_dt, '%Y-%m-%d %H:%i:%s') create_dt, DATE_FORMAT(ccst.update_dt, '%Y-%m-%d %H:%i:%s') update_dt";
-        sql += ", cc.agent_seq, cc.cmpny_id";
+        sql += ", cc.agent_seq, cc.cmpny_id , cc.cmpny_cd ";
         sql += ", cm.mem_id";
         sql += " from cs_coin_sell_today ccst"
         sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
-        sql += " left join cs_company cc on cc.cmpny_cd = cm.cmpny_cd) t";
+        sql += " left join cs_company cc on cc.cmpny_cd = cm.cmpny_cd ) t";
 
         sql += " where 1=1";
         if (param.adminGrade == 'CMDT00000000000002') {
@@ -51,14 +51,14 @@ function fnGetSellList(param, conn) {
         let sql = "";
         sql += "select t.* from ("
         sql += " select ccsl.buy_num, ccsl.sell_sts, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = ccsl.sell_sts) sell_sts_name, DATE_FORMAT(ccsl.create_dt, '%Y-%m-%d %H:%i:%s') create_dt, DATE_FORMAT(ccsl.update_dt, '%Y-%m-%d %H:%i:%s') update_dt";
-        sql += ", cc.agent_seq, cc.cmpny_id";
+        sql += ", cc.agent_seq, cc.cmpny_id , cc.cmpny_cd";
         sql += ", cm.mem_id";
         sql += " from cs_coin_sell_log ccsl"
         sql += " left join cs_member cm on cm.m_seq = ccsl.m_seq";
         sql += " left join cs_company cc on cc.cmpny_cd = cm.cmpny_cd";
         sql += " union all";
         sql += " select ccst.buy_num, ccst.sell_sts, (select tccd.CMM_DTL_NAME from tb_comm_cd_dtl tccd where tccd.CMM_DTL_CD = ccst.sell_sts) sell_sts_name, DATE_FORMAT(ccst.create_dt, '%Y-%m-%d %H:%i:%s') create_dt, DATE_FORMAT(ccst.update_dt, '%Y-%m-%d %H:%i:%s') update_dt";
-        sql += ", cc.agent_seq, cc.cmpny_id";
+        sql += ", cc.agent_seq, cc.cmpny_id , cc.cmpny_cd ";
         sql += ", cm.mem_id";
         sql += " from cs_coin_sell_today ccst"
         sql += " left join cs_member cm on cm.m_seq = ccst.m_seq";
